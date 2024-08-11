@@ -33,4 +33,36 @@ mealsRouter.get("/:id", async (req, res) => {
   }
 });
 
+mealsRouter.put("/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const {
+    title,
+    description,
+    location,
+    meal_when,
+    max_reservations,
+    price,
+    created_date,
+  } = req.body;
+
+  const updateData = {};
+  if (title) updateData.title = title;
+  if (description) updateData.description = description;
+  if (location) updateData.location = location;
+  if (meal_when) updateData.meal_when = meal_when;
+  if (max_reservations) updateData.max_reservations = max_reservations;
+  if (price) updateData.price = price;
+  if (created_date) updateData.created_date = created_date;
+
+  const update = await knex("Meal").where({ id }).update(updateData);
+
+  if (update.length === 0) {
+    res.status(404).send("Meal not found");
+  }
+  const updatedMeal = await knex("Meal").where({ id }).first();
+  res.status(200).json(updatedMeal);
+});
+
+mealsRouter.delete("/:id", (req, res) => {});
+
 export default mealsRouter;
