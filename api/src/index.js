@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import knex from "./database_client.js";
-import nestedRouter from "./routers/nested.js";
 import mealsRouter from "./routers/meals.js";
 import reservationsRouter from "./routers/reservations.js";
 
@@ -75,7 +74,15 @@ apiRouter.get("/last-meal", async (req, res) => {
 // This nested router example can also be replaced with your own sub-router
 apiRouter.use("/meals", mealsRouter);
 
+apiRouter.use("/reservations", reservationsRouter);
+
 app.use("/api", apiRouter);
+
+app.use((err, req, res, next) => {
+  res
+    .status(err.status || 500)
+    .json({ message: err.message || "An unexpected error occured" });
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`API listening on port ${process.env.PORT}`);
