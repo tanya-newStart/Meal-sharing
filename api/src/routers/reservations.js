@@ -72,17 +72,19 @@ reservationsRouter.post(
 
     const meal = await knex("Meal")
       .leftJoin("Reservation", "Meal.id", "Reservation.meal_id")
+      .select("Meal.id", "Meal.max_reservations")
+      .count("Reservation.id as total_reserved")
       .where("Meal.id", meal_id)
-      .groupBy("Meal.id")
-      .select("Meal.max_reservations")
-      .sum("Reservation.number_of_guests as total_reserved")
+      .groupBy("Meal.id", "Meal.max_reservations")
       .first();
+
+    console.log(meal);
 
     if (!meal) {
       errors.push(`meal with id ${meal_id} does not exists.`);
     }
 
-    const totalReserved = meal.total_reserved || 0;
+    const totalReserved = parseInt(meal.total_reserved, 10) || 0;
     const availableSpots = meal.max_reservations - totalReserved;
 
     if (number_of_guests > availableSpots) {
@@ -130,6 +132,12 @@ reservationsRouter.put(
       contact_email,
     } = req.body;
 
+    const currentReservation = await knex("Reservation").where({ id }).first();
+
+    if (!currentReservation) {
+      return res.status(404).json({ message: "Reservation not found" });
+    }
+
     const updateData = {};
     if (number_of_guests) updateData.number_of_guests = number_of_guests;
     if (meal_id) updateData.meal_id = meal_id;
@@ -145,6 +153,37 @@ reservationsRouter.put(
       return res.status(400).json({ errors });
     }
 
+    if (meal_id || number_of_guests) {
+      const newMealId = meal_id || currentReservation.meal_id;
+      const newGuestCount =
+        number_of_guests || currentReservation.number_of_guests;
+
+      const meal = await knex("Meal")
+        .leftJoin("Reservation", "Meal.id", "Reservation.meal_id")
+        .select("Meal.id", "Meal.max_reservations")
+        .count("Reservation.id as total_reserved")
+        .where("Meal.id", newMealId)
+        .groupBy("Meal.id", "Meal.max_reservations")
+        .first();
+
+      if (!meal) {
+        return res
+          .status(400)
+          .json({ error: `Meal with id ${newMealId} does not exists` });
+      }
+
+      const totalReserved = parseInt(meal.total_reserved, 10) || 0;
+      const availableSpots = meal.max_reservations - totalReserved;
+
+      const guestDifference =
+        newGuestCount - currentReservation.number_of_guests;
+
+      if (guestDifference > availableSpots) {
+        return res
+          .status(400)
+          .json({ error: "Reservation exceeds available spots." });
+      }
+    }
     const update = await knex("Reservation").where({ id }).update(updateData);
 
     if (update.length === 0) {
