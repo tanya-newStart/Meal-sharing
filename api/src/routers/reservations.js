@@ -66,13 +66,29 @@ reservationsRouter.post(
 
     const errors = validateReservation(req.body);
 
-    const meal = await knex("Meal").where({ id: meal_id }).first();
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
+
+    const meal = await knex("Meal")
+      .leftJoin("Reservation", "Meal.id", "Reservation.meal_id")
+      .where("Meal.id", meal_id)
+      .groupBy("Meal.id")
+      .select("Meal.max_reservations")
+      .sum("Reservation.number_of_guests as total_reserved")
+      .first();
+
     if (!meal) {
       errors.push(`meal with id ${meal_id} does not exists.`);
     }
 
-    if (errors.length > 0) {
-      return res.status(400).json({ errors });
+    const totalReserved = meal.total_reserved || 0;
+    const availableSpots = meal.max_reservations - totalReserved;
+
+    if (number_of_guests > availableSpots) {
+      return res.status(400).json({
+        error: `Reservation exceeds available spots. Only ${availableSpots} spots left.`,
+      });
     }
     const newReservation = await knex("Reservation").insert({
       number_of_guests,
