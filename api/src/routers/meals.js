@@ -12,11 +12,76 @@ mealsRouter.get(
   })
 );
 
+const validateMeal = (data) => {
+  const errors = [];
+
+  if (
+    data.title !== undefined &&
+    (!data.title || typeof data.title !== "string" || data.title.trim() === "")
+  ) {
+    errors.push("Title is required and must be a non-empty string");
+  }
+
+  if (
+    data.description !== undefined &&
+    (!data.description ||
+      typeof data.description !== "string" ||
+      data.description.trim() === "")
+  ) {
+    errors.push("Description is required and must be a non-empty string.");
+  }
+
+  if (
+    data.location !== undefined &&
+    (!data.location ||
+      typeof data.location !== "string" ||
+      data.location.trim() === "")
+  ) {
+    errors.push("Location is required and must be a non-empty string.");
+  }
+
+  if (
+    data.meal_when !== undefined &&
+    (!data.meal_when || isNaN(Date.parse(data.meal_when)))
+  ) {
+    errors.push("Meal_when must be a valid date.");
+  }
+
+  if (data.max_reservations !== undefined) {
+    const maxReservations = Number(data.max_reservations);
+    if (!Number.isInteger(maxReservations) || maxReservations < 1) {
+      errors.push("Max reservations must be a positive integer.");
+    }
+  }
+
+  if (data.price !== undefined) {
+    const price = Number(data.price);
+    if (typeof price !== "number" || price <= 0) {
+      errors.push("Price must be a positive number.");
+    }
+  }
+
+  return errors;
+};
+
 mealsRouter.post(
   "/",
   asyncHandler(async (req, res) => {
     const { title, description, location, meal_when, max_reservations, price } =
       req.body;
+    const data = {
+      title,
+      description,
+      location,
+      meal_when,
+      max_reservations: Number(max_reservations),
+      price: Number(price),
+    };
+    const errors = validateMeal(data);
+
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
     const newMeal = await knex("Meal").insert({
       title,
       description,
@@ -25,6 +90,7 @@ mealsRouter.post(
       max_reservations,
       price,
     });
+
     res.status(201).json({ status: "success", "id of the new meal": newMeal });
   })
 );
@@ -61,9 +127,16 @@ mealsRouter.put(
     if (description) updateData.description = description;
     if (location) updateData.location = location;
     if (meal_when) updateData.meal_when = meal_when;
-    if (max_reservations) updateData.max_reservations = max_reservations;
-    if (price) updateData.price = price;
+    if (max_reservations)
+      updateData.max_reservations = Number(max_reservations);
+    if (price) updateData.price = Number(price);
     if (created_date) updateData.created_date = created_date;
+
+    const errors = validateMeal(updateData);
+
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
 
     const update = await knex("Meal").where({ id }).update(updateData);
 
@@ -78,10 +151,10 @@ mealsRouter.put(
 mealsRouter.delete(
   "/:id",
   asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const id = Number(req.params.id);
     const deletedData = await knex("Meal").where({ id }).del();
 
-    if (deletedData) {
+    if (deletedData > 0) {
       res.json({ message: `Meal with id ${id} was deleted successfully.` });
     } else {
       res.status(404).json({ error: `Meal with id ${id} was not found.` });
