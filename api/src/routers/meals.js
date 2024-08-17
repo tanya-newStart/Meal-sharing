@@ -7,8 +7,30 @@ const mealsRouter = express.Router();
 mealsRouter.get(
   "/",
   asyncHandler(async (req, res) => {
-    const result = await knex("Meal").orderBy("id");
-    res.json({ result });
+    const { limit, maxPrice, title } = req.query;
+
+    let mealQuery = knex("Meal").select("*");
+
+    if (limit) {
+      const limitValue = Number(limit);
+      if (!isNaN(limitValue) && limitValue > 0) {
+        mealQuery.limit(limitValue);
+      }
+    }
+
+    if (maxPrice) {
+      const maxPriceValue = Number(maxPrice);
+      if (!isNaN(maxPriceValue) && maxPrice > 0) {
+        mealQuery.where("price", "<=", maxPriceValue);
+      }
+    }
+
+    if (title && typeof title === "string") {
+      mealQuery.where("title", "like", `%${title}%`);
+    }
+
+    const results = await mealQuery;
+    res.status(200).json({ data: results });
   })
 );
 
