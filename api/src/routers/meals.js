@@ -7,9 +7,19 @@ const mealsRouter = express.Router();
 mealsRouter.get(
   "/",
   asyncHandler(async (req, res) => {
-    const { limit, maxPrice, title } = req.query;
+    const { limit, maxPrice, title, availableReservations } = req.query;
 
-    let mealQuery = knex("Meal").select("*");
+    let mealQuery = knex("Meal")
+      .select(
+        "Meal.id",
+        "Meal.title",
+        "Meal.description",
+        "Meal.price",
+        "Meal.max_reservations",
+        knex.raw("coalesce(sum(r.number_of_guests),0) as total_reserved")
+      )
+      .leftJoin("Reservation as r", "Meal.id", "r.meal_id")
+      .groupBy("Meal.id");
 
     if (limit) {
       const limitValue = Number(limit);
@@ -27,6 +37,16 @@ mealsRouter.get(
 
     if (title && typeof title === "string") {
       mealQuery.where("title", "like", `%${title}%`);
+    }
+
+    if (availableReservations === "true") {
+      mealQuery.havingRaw(
+        "coalesce(sum(r.number_of_guests),0) < Meal.max_reservations"
+      );
+    } else if (availableReservations === "false") {
+      mealQuery.havingRaw(
+        "coalesce(sum(r.number_of_guests),0) >= Meal.max_reservations"
+      );
     }
 
     const results = await mealQuery;
