@@ -14,6 +14,8 @@ mealsRouter.get(
       availableReservations,
       dateAfter,
       dateBefore,
+      sortKey,
+      sortDir,
     } = req.query;
 
     let mealQuery = knex("Meal")
@@ -65,6 +67,14 @@ mealsRouter.get(
     if (dateBefore) {
       const dateBeforeValue = dateBefore ? new Date(dateBefore) : null;
       mealQuery.where("Meal.meal_when", "<", dateBeforeValue.toISOString());
+    }
+
+    if (sortKey) {
+      const validSortKeys = ["meal_when", "max_reservations", "price"];
+      if (validSortKeys.includes(sortKey)) {
+        const direction = sortDir && sortDir === "desc" ? "desc" : "asc";
+        mealQuery.orderBy(sortKey, direction);
+      }
     }
 
     const results = await mealQuery;
