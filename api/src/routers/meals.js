@@ -7,7 +7,14 @@ const mealsRouter = express.Router();
 mealsRouter.get(
   "/",
   asyncHandler(async (req, res) => {
-    const { limit, maxPrice, title, availableReservations } = req.query;
+    const {
+      limit,
+      maxPrice,
+      title,
+      availableReservations,
+      dateAfter,
+      dateBefore,
+    } = req.query;
 
     let mealQuery = knex("Meal")
       .select(
@@ -16,6 +23,7 @@ mealsRouter.get(
         "Meal.description",
         "Meal.price",
         "Meal.max_reservations",
+        "Meal.meal_when",
         knex.raw("coalesce(sum(r.number_of_guests),0) as total_reserved")
       )
       .leftJoin("Reservation as r", "Meal.id", "r.meal_id")
@@ -47,6 +55,16 @@ mealsRouter.get(
       mealQuery.havingRaw(
         "coalesce(sum(r.number_of_guests),0) >= Meal.max_reservations"
       );
+    }
+
+    if (dateAfter) {
+      const dateAfterValue = dateAfter ? new Date(dateAfter) : null;
+      mealQuery.where("Meal.meal_when", ">", dateAfterValue.toISOString());
+    }
+
+    if (dateBefore) {
+      const dateBeforeValue = dateBefore ? new Date(dateBefore) : null;
+      mealQuery.where("Meal.meal_when", "<", dateBeforeValue.toISOString());
     }
 
     const results = await mealQuery;
