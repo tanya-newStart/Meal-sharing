@@ -192,23 +192,23 @@ mealsRouter.put(
       created_date,
     } = req.body;
 
-    const updateData = {};
-    if (title) updateData.title = title;
-    if (description) updateData.description = description;
-    if (location) updateData.location = location;
-    if (meal_when) updateData.meal_when = meal_when;
+    const dataToUpdate = {};
+    if (title) dataToUpdate.title = title;
+    if (description) dataToUpdate.description = description;
+    if (location) dataToUpdate.location = location;
+    if (meal_when) dataToUpdate.meal_when = meal_when;
     if (max_reservations)
-      updateData.max_reservations = Number(max_reservations);
-    if (price) updateData.price = Number(price);
-    if (created_date) updateData.created_date = created_date;
+      dataToUpdate.max_reservations = Number(max_reservations);
+    if (price) dataToUpdate.price = Number(price);
+    if (created_date) dataToUpdate.created_date = created_date;
 
-    const errors = validateMeal(updateData);
+    const errors = validateMeal(dataToUpdate);
 
     if (errors.length > 0) {
       return res.status(400).json({ errors });
     }
 
-    const update = await knex("Meal").where({ id }).update(updateData);
+    const update = await knex("Meal").where({ id }).update(dataToUpdate);
 
     if (update.length === 0) {
       res.status(404).send("Meal not found");
