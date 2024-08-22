@@ -232,4 +232,24 @@ mealsRouter.delete(
   })
 );
 
+mealsRouter.get(
+  "/:meal_id/reviews",
+  asyncHandler(async (req, res) => {
+    const mealId = req.params.meal_id;
+    const meal = await knex("Meal").where("Meal.id", mealId).first();
+    if (!meal) return res.status(404).json({ message: "Meal not found" });
+
+    const result = await knex("Review")
+      .join("Meal", "Review.meal_id", "=", "Meal.id")
+      .where("Meal.id", mealId)
+      .select("Review.*");
+
+    if (result.length === 0)
+      return res
+        .status(404)
+        .json({ message: "No reviews found for this meal" });
+    res.status(200).json(result);
+  })
+);
+
 export default mealsRouter;
