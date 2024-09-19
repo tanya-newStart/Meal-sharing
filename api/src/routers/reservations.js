@@ -138,16 +138,16 @@ reservationsRouter.put(
       return res.status(404).json({ message: "Reservation not found" });
     }
 
-    const updateData = {};
-    if (number_of_guests) updateData.number_of_guests = number_of_guests;
-    if (meal_id) updateData.meal_id = meal_id;
-    if (created_date) updateData.created_date = created_date;
+    const dataToUpdate = {};
+    if (number_of_guests) dataToUpdate.number_of_guests = number_of_guests;
+    if (meal_id) dataToUpdate.meal_id = meal_id;
+    if (created_date) dataToUpdate.created_date = created_date;
     if (contact_phonenumber)
-      updateData.contact_phonenumber = contact_phonenumber;
-    if (contact_name) updateData.contact_name = contact_name;
-    if (contact_email) updateData.contact_email = contact_email;
+      dataToUpdate.contact_phonenumber = contact_phonenumber;
+    if (contact_name) dataToUpdate.contact_name = contact_name;
+    if (contact_email) dataToUpdate.contact_email = contact_email;
 
-    const errors = validateReservation(updateData);
+    const errors = validateReservation(dataToUpdate);
 
     if (errors.length > 0) {
       return res.status(400).json({ errors });
