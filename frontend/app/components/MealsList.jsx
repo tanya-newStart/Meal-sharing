@@ -4,13 +4,11 @@ import axios from "axios";
 import {
   Container,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
+  Box,
   CircularProgress,
   Alert,
 } from "@mui/material";
+import Meal from "./Meal";
 
 function MealsList() {
   const [meals, setMeals] = useState([]);
@@ -39,32 +37,25 @@ function MealsList() {
   return (
     <Container>
       <Typography variant="h4" style={{ margin: "10px 0", padding: "10px" }}>
-        Meals{" "}
+        Meals
       </Typography>
       {meals.length > 0 ? (
-        <List>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2,
+            justifyContent: "space-around",
+          }}
+        >
           {meals.map((meal) => (
-            <Paper key={meal.id}>
-              <ListItem>
-                <ListItemText
-                  primary={meal.title}
-                  secondary={
-                    <>
-                      <Typography variant="body2" color="textSecondary">
-                        {meal.description}
-                      </Typography>
-                      <Typography variant="body2">
-                        Price: ${meal.price}
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-            </Paper>
+            <Box sx={{ width: "300px" }}>
+              <Meal key={meal.id} {...meal} />
+            </Box>
           ))}
-        </List>
+        </Box>
       ) : (
-        <p>No meals available</p>
+        <Typography variant="body1">No meals available</Typography>
       )}
     </Container>
   );
