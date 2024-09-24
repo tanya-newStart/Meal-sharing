@@ -45,7 +45,13 @@ export default function Navbar() {
       <Toolbar>
         <Typography
           variant="h6"
-          sx={{ flexGrow: 1, fontWeight: "bold", letterSpacing: 1.5 }}
+          sx={{
+            flexGrow: 1,
+            fontWeight: "bold",
+            letterSpacing: 1.5,
+            fontFamily: "Pacifico,cursive",
+            fontSize: "2rem",
+          }}
         >
           MealHub
         </Typography>
