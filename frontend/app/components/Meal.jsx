@@ -9,15 +9,15 @@ const Meal = ({ title, description, price, image_url }) => {
         border: "1px solid #ddd",
         borderRadius: "8px",
         mb: 2,
-        p: 1,
+        p: 2,
         bgcolor: "#f9f9f9",
       }}
     >
       <Box display="flex" alignItems="flex-start" width="100%">
         <Box
           mr={2}
-          width={300}
-          height={200}
+          width={200}
+          height={150}
           position="relative"
           overflow="hidden"
           borderRadius="8px"
@@ -26,7 +26,7 @@ const Meal = ({ title, description, price, image_url }) => {
             src={`/images/${imageUrl}`}
             alt={title}
             layout="fill"
-            objectFit="cover"
+            objectFit="contain"
             style={{ objectPosition: "center" }}
           />
         </Box>
@@ -38,16 +38,14 @@ const Meal = ({ title, description, price, image_url }) => {
           }
           secondary={
             <Box>
-              <Typography variant="body2" color="textSecondary">
+              <Typography variant="body2" color="textSecondary" gutterBottom>
                 {description}
               </Typography>
               <Typography
                 variant="body1"
                 fontWeight="bold"
                 color="secondary"
-                position="absolute"
-                bottom={5}
-                right={5}
+                position="relative"
               >
                 Price: ${price}
               </Typography>

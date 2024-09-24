@@ -49,7 +49,7 @@ function MealsList() {
           }}
         >
           {meals.map((meal) => (
-            <Box sx={{ width: "300px" }}>
+            <Box sx={{ width: "400px" }}>
               <Meal key={meal.id} {...meal} />
             </Box>
           ))}

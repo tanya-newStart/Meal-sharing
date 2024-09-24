@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-// import MenuIcon from "@mui/icons-material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import Link from "next/link";
 
@@ -31,6 +31,7 @@ export default function Navbar() {
     { text: "Home", link: "/nav_bar" },
     { text: "About", link: "/nav_bar/about" },
     { text: "Contact", link: "/nav_bar/contact" },
+    { text: "Reserve Your Spot", link: "/nav_bar/reserve" },
   ];
   return (
     <AppBar
