@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import Meal from "./Meal";
 
-function MealsList() {
+function MealsList({ limit }) {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,15 +31,15 @@ function MealsList() {
 
     fetchMeals();
   }, []);
+
   if (loading) return <CircularProgress />;
   if (error) return <Alert severity="error">Error: {error}</Alert>;
 
+  const displayedMeals = limit ? meals.slice(0, limit) : meals;
+
   return (
     <Container>
-      <Typography variant="h4" style={{ margin: "10px 0", padding: "10px" }}>
-        Meals
-      </Typography>
-      {meals.length > 0 ? (
+      {displayedMeals.length > 0 ? (
         <Box
           sx={{
             display: "flex",
@@ -48,9 +48,9 @@ function MealsList() {
             justifyContent: "space-around",
           }}
         >
-          {meals.map((meal) => (
-            <Box sx={{ width: "400px" }}>
-              <Meal key={meal.id} {...meal} />
+          {displayedMeals.map((meal) => (
+            <Box sx={{ width: "400px" }} key={meal.id}>
+              <Meal {...meal} />
             </Box>
           ))}
         </Box>
