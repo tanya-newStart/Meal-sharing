@@ -1,7 +1,8 @@
-import { ListItem, ListItemText, Typography, Box } from "@mui/material";
+import { ListItem, ListItemText, Typography, Box, Button } from "@mui/material";
 import Image from "next/image";
+import Link from "next/link";
 
-const Meal = ({ title, description, price, image_url }) => {
+const Meal = ({ id, title, description, price, image_url }) => {
   const imageUrl = image_url || "default.jpg";
   return (
     <ListItem
@@ -11,6 +12,10 @@ const Meal = ({ title, description, price, image_url }) => {
         mb: 2,
         p: 2,
         bgcolor: "#f9f9f9",
+        display: "flex",
+        flexDirection: "column",
+        justifyItems: "space-between",
+        height: "100%",
       }}
     >
       <Box display="flex" alignItems="flex-start" width="100%">
@@ -52,6 +57,33 @@ const Meal = ({ title, description, price, image_url }) => {
             </Box>
           }
         />
+        <Box
+          ml={2}
+          mt={2}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Link href={`/meals/${id}`} passHref>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: "8px",
+                padding: "4px 8px",
+                fontSize: "0.8rem",
+                width: "90px",
+                height: "60px",
+                "&:hover": {
+                  backgroundColor: "#fafad2",
+                  color: "black",
+                },
+              }}
+            >
+              Savor the Details!
+            </Button>
+          </Link>
+        </Box>
       </Box>
     </ListItem>
   );

@@ -14,6 +14,10 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import InfoIcon from "@mui/icons-material/Info";
+import ContanctMailIcon from "@mui/icons-material/ContactMail";
+import ReserveIcon from "@mui/icons-material/EventSeat";
 
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -28,10 +32,14 @@ export default function Navbar() {
     setDrawerOpen(!drawerOpen);
   };
   const navItems = [
-    { text: "Home", link: "/nav_bar" },
-    { text: "About", link: "/nav_bar/about" },
-    { text: "Contact", link: "/nav_bar/contact" },
-    { text: "Reserve Your Spot", link: "/nav_bar/reserve" },
+    { text: "Home", link: "/nav_bar", icon: <HomeIcon /> },
+    { text: "About", link: "/nav_bar/about", icon: <InfoIcon /> },
+    { text: "Contact", link: "/nav_bar/contact", icon: <ContanctMailIcon /> },
+    {
+      text: "Reserve Your Spot",
+      link: "/nav_bar/reserve",
+      icon: <ReserveIcon />,
+    },
   ];
   return (
     <AppBar
@@ -79,7 +87,14 @@ export default function Navbar() {
                   {navItems.map((item) => (
                     <ListItem button key={item.text}>
                       <Link href={item.link} passHref>
-                        <ListItemText primary={item.text} />
+                        <ListItemText
+                          primary={
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                              {item.icon}
+                              <span style={{ marginLeft: 8 }}>{item.text}</span>
+                            </Box>
+                          }
+                        />
                       </Link>
                     </ListItem>
                   ))}
@@ -91,8 +106,18 @@ export default function Navbar() {
           <Box sx={{ display: "flex" }}>
             {navItems.map((item) => (
               <Button key={item.text} sx={{ color: "#fff" }}>
-                <Link href={item.link} passHref>
-                  {item.text}
+                <Link
+                  href={item.link}
+                  passHref
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    textDecoaration: "none",
+                    color: "#fff",
+                  }}
+                >
+                  {item.icon}
+                  <span style={{ marginLeft: 8 }}>{item.text}</span>
                 </Link>
               </Button>
             ))}

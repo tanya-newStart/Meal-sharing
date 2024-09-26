@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import MealsList from "../components/MealsList";
 import Navbar from "../components/NavBar";
 import Link from "next/link";
+import SingleMeal from "../meals/[id]/page";
 
 const HomePage = () => {
   return (
