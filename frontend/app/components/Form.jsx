@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import { Box, Typography, Button, Container } from "@mui/material";
+import { Box, Typography, Button, Container, TextField } from "@mui/material";
 import Link from "next/link";
 
 export default function Form() {
@@ -71,42 +71,45 @@ export default function Form() {
         </Typography>
       </Box>
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-        <label htmlFor="customerName">
-          <Typography variant="body1">Name</Typography>
-          <input
-            type="text"
-            id="customerName"
-            name="customerName"
-            value={formData.customerName}
-            onChange={handleChange}
-            required
-            ref={customerNameRef}
-          />
-        </label>
-        <label htmlFor="email">
-          <Typography variant="body1">Email</Typography>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            ref={emailRef}
-          />
-        </label>
-        <label htmlFor="phonenumber">
-          <Typography variant="body1">Phone</Typography>
-          <input
-            type="tel"
-            id="phonenumber"
-            name="phonenumber"
-            value={formData.phonenumber}
-            onChange={handleChange}
-            required
-            ref={phonenumberRef}
-          />
-        </label>
+        <TextField
+          label="Name"
+          variant="outlined"
+          name="customerName"
+          value={formData.customerName}
+          onChange={handleChange}
+          required
+          fullWidth
+          inputRef={customerNameRef}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
+          label="Email"
+          type="email"
+          name="email"
+          variant="outlined"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          fullWidth
+          inputRef={emailRef}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
+          label="Phone number"
+          type="tel"
+          id="phonenumber"
+          name="phonenumber"
+          variant="outlined"
+          value={formData.phonenumber}
+          onChange={handleChange}
+          required
+          fullWidth
+          inputRef={phonenumberRef}
+          sx={{ mb: 2 }}
+        />
+
         <Button
           type="submit"
           variant="contained"
