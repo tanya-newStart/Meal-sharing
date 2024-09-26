@@ -37,7 +37,7 @@ const validateReservation = (data) => {
   if (data.contact_phonenumber !== undefined) {
     if (!data.contact_phonenumber) {
       errors.push("phone number is required");
-    } else if (!/^[0-9\-+]{9,15}$/.test(data.contact_phonenumber)) {
+    } else if (!/^[0-9\-+]{8,15}$/.test(data.contact_phonenumber)) {
       errors.push("phone number is required and must be valid");
     }
   }
@@ -65,6 +65,7 @@ reservationsRouter.post(
     } = req.body;
 
     const errors = validateReservation(req.body);
+    console.log(errors);
 
     if (errors.length > 0) {
       return res.status(400).json({ errors });
@@ -89,7 +90,9 @@ reservationsRouter.post(
 
     if (number_of_guests > availableSpots) {
       return res.status(400).json({
-        error: `Reservation exceeds available spots. Only ${availableSpots} spots left.`,
+        errors: [
+          `Reservation exceeds available spots. Only ${availableSpots} spots left.`,
+        ],
       });
     }
     const newReservation = await knex("Reservation").insert({
