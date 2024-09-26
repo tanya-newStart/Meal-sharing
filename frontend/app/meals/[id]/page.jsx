@@ -61,7 +61,7 @@ const SingleMeal = ({ params }) => {
           sx={{ width: "50%", height: "auto", mt: 2 }}
         />
       </Box>
-      <Form></Form>
+      <Form mealId={id}></Form>
     </>
   );
 };

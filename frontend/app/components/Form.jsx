@@ -3,11 +3,12 @@ import { useState, useRef } from "react";
 import { Box, Typography, Button, Container, TextField } from "@mui/material";
 import Link from "next/link";
 
-export default function Form() {
+export default function Form({ mealId }) {
   const [formData, setFormData] = useState({
     customerName: "",
     email: "",
     phonenumber: "",
+    numberOfGuests: 1,
   });
 
   const customerNameRef = useRef(null);
@@ -28,11 +29,12 @@ export default function Form() {
     customerName: /^[A-Za-z]{2,}(?:\s[A-Za-z]{2,})+$/,
     email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
     phonenumber: /^\d{8}$/,
+    numberOfGuests: /^[1-9]\d*$/,
   };
   const validateField = (fieldName, value) => {
     return regexPatterns[fieldName].test(value);
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let errorMessages = [];
     if (!validateField("customerName", formData.customerName)) {
@@ -50,8 +52,38 @@ export default function Form() {
       alert(errorMessages.join("\n"));
       return;
     }
+    const reservationData = {
+      contact_name: formData.customerName,
+      contact_email: formData.email,
+      contact_phonenumber: formData.phonenumber,
+      number_of_guests: formData.numberOfGuests,
+      meal_id: mealId,
+    };
+    console.log(reservationData);
 
-    setSubmitted(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/reservations`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(reservationData),
+        }
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.errors);
+      }
+      const data = await response.json();
+      console.log(data);
+
+      setSubmitted(true);
+    } catch (error) {
+      console.log(error);
+      alert(error.message);
+    }
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -82,7 +114,15 @@ export default function Form() {
           inputRef={customerNameRef}
           sx={{ mb: 2 }}
         />
-
+        <TextField
+          label="Number of Guests"
+          name="numberOfGuests"
+          type="number"
+          value={formData.numberOfGuests}
+          onChange={handleChange}
+          required
+          fullWidth
+        ></TextField>
         <TextField
           label="Email"
           type="email"
@@ -116,7 +156,7 @@ export default function Form() {
           color="primary"
           sx={{ mt: 2 }}
         >
-          Sign Up
+          Book Seat
         </Button>
         {submitted && (
           <Box sx={{ mt: 2 }}>
