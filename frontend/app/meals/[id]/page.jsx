@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CircularProgress, Box, Typography, Alert } from "@mui/material";
+import Form from "../../components/Form";
 
 const SingleMeal = ({ params }) => {
   const { id } = params;
@@ -48,17 +49,20 @@ const SingleMeal = ({ params }) => {
   }
 
   return (
-    <Box>
-      <Typography variant="h4">{meal.title}</Typography>
-      <Typography variant="body1">{meal.description}</Typography>
-      <Typography variant="subtitle1">Price: ${meal.price}</Typography>
-      <Box
-        component="img"
-        src={`/images/${meal.image_url}`}
-        alt=""
-        sx={{ width: "50%", height: "auto", mt: 2 }}
-      />
-    </Box>
+    <>
+      <Box>
+        <Typography variant="h4">{meal.title}</Typography>
+        <Typography variant="body1">{meal.description}</Typography>
+        <Typography variant="subtitle1">Price: ${meal.price}</Typography>
+        <Box
+          component="img"
+          src={`/images/${meal.image_url}`}
+          alt=""
+          sx={{ width: "50%", height: "auto", mt: 2 }}
+        />
+      </Box>
+      <Form></Form>
+    </>
   );
 };
 export default SingleMeal;
