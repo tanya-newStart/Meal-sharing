@@ -215,4 +215,29 @@ reservationsRouter.delete(
   })
 );
 
+reservationsRouter.get(
+  "/availability/:meal_id",
+  asyncHandler(async (req, res) => {
+    const mealId = Number(req.params.meal_id);
+    const meal = await knex("Meal")
+      .leftJoin("Reservation", "Meal.id", "Reservation.meal_id")
+      .select("Meal.id", "Meal.max_reservations")
+      .count("Reservation.id as total_reserved")
+      .where("Meal.id", mealId)
+      .groupBy("Meal.id", "Meal.max_reservations")
+      .first();
+
+    if (!meal) {
+      return res
+        .status(404)
+        .json({ error: `Meal with id ${mealId} does not exists` });
+    }
+
+    const totalReserved = parseInt(meal.total_reserved, 10) || 0;
+    const availableSpots = meal.max_reservations - totalReserved;
+
+    res.json({ available_spots: availableSpots });
+  })
+);
+
 export default reservationsRouter;
