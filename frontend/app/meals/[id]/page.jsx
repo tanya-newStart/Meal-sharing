@@ -9,6 +9,7 @@ const SingleMeal = ({ params }) => {
   const [meal, setMeal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [availableSpots, setAvailableSpots] = useState(0);
 
   useEffect(() => {
     const fetchedMeal = async () => {
@@ -26,11 +27,27 @@ const SingleMeal = ({ params }) => {
         }
       } catch (error) {
         setError(error.message);
-      } finally {
-        setLoading(false);
+      }
+    };
+
+    const fetchAvailableSpots = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/reservations/availability/${id}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setAvailableSpots(data.available_spots);
+        } else {
+          throw new Error("Failed to fetch available spots");
+        }
+      } catch (error) {
+        setError(error.message);
       }
     };
     fetchedMeal();
+    fetchAvailableSpots();
+    setLoading(false);
   }, [id]);
 
   if (loading) {
@@ -47,22 +64,38 @@ const SingleMeal = ({ params }) => {
       </Box>
     );
   }
-
+  if (!meal) {
+    return (
+      <Box mt={2} display="flex" justifyContent="center">
+        <Alert severity="warning">Meal not found</Alert>
+      </Box>
+    );
+  }
   return (
-    <>
-      <Box>
-        <Typography variant="h4">{meal.title}</Typography>
-        <Typography variant="body1">{meal.description}</Typography>
-        <Typography variant="subtitle1">Price: ${meal.price}</Typography>
+    <Box>
+      <Box display="flex" alignItems="flex-start" sx={{ mt: 2 }}>
+        <Box sx={{ width: { xs: "100%", sm: "50%" }, mr: { sm: 2 } }}>
+          <Typography variant="h4">{meal.title}</Typography>
+          <Typography variant="body1">{meal.description}</Typography>
+          <Typography variant="subtitle1">Price: ${meal.price}</Typography>
+        </Box>
         <Box
           component="img"
           src={`/images/${meal.image_url}`}
           alt=""
-          sx={{ width: "50%", height: "auto", mt: 2 }}
+          sx={{ width: "30%", height: "auto", mt: 2 }}
         />
       </Box>
-      <Form mealId={id}></Form>
-    </>
+      <Box sx={{ width: { xs: "100%", sm: "35%" } }}>
+        {availableSpots > 0 ? (
+          <Form mealId={id}></Form>
+        ) : (
+          <Alert severity="warning">
+            Sorry, this meal is fully booked. No reservations are available.
+          </Alert>
+        )}
+      </Box>
+    </Box>
   );
 };
 export default SingleMeal;
