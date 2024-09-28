@@ -1,0 +1,9 @@
+{
+  "name": "meal-sharing-app",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend",
+    "api"
+  ]
+}
