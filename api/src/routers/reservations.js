@@ -219,10 +219,17 @@ reservationsRouter.get(
   "/availability/:meal_id",
   asyncHandler(async (req, res) => {
     const mealId = Number(req.params.meal_id);
+
     const meal = await knex("Meal")
       .leftJoin("Reservation", "Meal.id", "Reservation.meal_id")
-      .select("Meal.id", "Meal.max_reservations")
-      .count("Reservation.id as total_reserved")
+      .select(
+        "Meal.id",
+        "Meal.max_reservations",
+        knex.raw(
+          "COALESCE(SUM(Reservation.number_of_guests), 0) AS total_reserved"
+        )
+      )
+
       .where("Meal.id", mealId)
       .groupBy("Meal.id", "Meal.max_reservations")
       .first();
