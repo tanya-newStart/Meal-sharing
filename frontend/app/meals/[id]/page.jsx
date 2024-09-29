@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CircularProgress, Box, Typography, Alert } from "@mui/material";
-import Form from "../../components/Form";
+import ReserveMeal from "../../components/ReserveMeal";
 
 const SingleMeal = ({ params }) => {
   const { id } = params;
@@ -88,7 +88,7 @@ const SingleMeal = ({ params }) => {
       </Box>
       <Box sx={{ width: { xs: "100%", sm: "35%" } }}>
         {availableSpots > 0 ? (
-          <Form mealId={id}></Form>
+          <ReserveMeal mealId={id}></ReserveMeal>
         ) : (
           <Alert severity="warning">
             Sorry, this meal is fully booked. No reservations are available.

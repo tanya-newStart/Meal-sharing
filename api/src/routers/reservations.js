@@ -37,7 +37,7 @@ const validateReservation = (data) => {
   if (data.contact_phonenumber !== undefined) {
     if (!data.contact_phonenumber) {
       errors.push("phone number is required");
-    } else if (!/^[0-9\-+]{8,15}$/.test(data.contact_phonenumber)) {
+    } else if (!/^[\+\-\(\)\d\s]{8,15}$/.test(data.contact_phonenumber)) {
       errors.push("phone number is required and must be valid");
     }
   }
@@ -65,7 +65,6 @@ reservationsRouter.post(
     } = req.body;
 
     const errors = validateReservation(req.body);
-    console.log(errors);
 
     if (errors.length > 0) {
       return res.status(400).json({ errors });
@@ -219,6 +218,10 @@ reservationsRouter.get(
   "/availability/:meal_id",
   asyncHandler(async (req, res) => {
     const mealId = Number(req.params.meal_id);
+
+    if (isNaN(mealId) || mealId < 1) {
+      return res.status(400).json({ error: "Invalid meal id" });
+    }
 
     const meal = await knex("Meal")
       .leftJoin("Reservation", "Meal.id", "Reservation.meal_id")

@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { Box, Typography, Button, Container, TextField } from "@mui/material";
 import Link from "next/link";
 
-export default function Form({ mealId }) {
+export default function ReserveMeal({ mealId }) {
   const [formData, setFormData] = useState({
     customerName: "",
     email: "",
@@ -28,7 +28,7 @@ export default function Form({ mealId }) {
   const regexPatterns = {
     customerName: /^[A-Za-z]{2,}(?:\s[A-Za-z]{2,})+$/,
     email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-    phonenumber: /^\d{8}$/,
+    phonenumber: /^[\+\-\(\)\d\s]{8,15}$/,
     numberOfGuests: /^[1-9]\d*$/,
   };
   const validateField = (fieldName, value) => {
@@ -59,7 +59,6 @@ export default function Form({ mealId }) {
       number_of_guests: formData.numberOfGuests,
       meal_id: mealId,
     };
-    console.log(reservationData);
 
     try {
       const response = await fetch(
@@ -77,11 +76,9 @@ export default function Form({ mealId }) {
         throw new Error(errorData.errors);
       }
       const data = await response.json();
-      console.log(data);
 
       setSubmitted(true);
     } catch (error) {
-      console.log(error);
       alert(error.message);
     }
   };
