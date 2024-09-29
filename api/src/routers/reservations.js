@@ -37,7 +37,7 @@ const validateReservation = (data) => {
   if (data.contact_phonenumber !== undefined) {
     if (!data.contact_phonenumber) {
       errors.push("phone number is required");
-    } else if (!/^[0-9\-+]{9,15}$/.test(data.contact_phonenumber)) {
+    } else if (!/^[\+\-\(\)\d\s]{8,15}$/.test(data.contact_phonenumber)) {
       errors.push("phone number is required and must be valid");
     }
   }
@@ -89,7 +89,9 @@ reservationsRouter.post(
 
     if (number_of_guests > availableSpots) {
       return res.status(400).json({
-        error: `Reservation exceeds available spots. Only ${availableSpots} spots left.`,
+        errors: [
+          `Reservation exceeds available spots. Only ${availableSpots} spots left.`,
+        ],
       });
     }
     const newReservation = await knex("Reservation").insert({
@@ -209,6 +211,42 @@ reservationsRouter.delete(
         .status(404)
         .json({ error: `Reservation with id ${id} was not found.` });
     }
+  })
+);
+
+reservationsRouter.get(
+  "/availability/:meal_id",
+  asyncHandler(async (req, res) => {
+    const mealId = Number(req.params.meal_id);
+
+    if (isNaN(mealId) || mealId < 1) {
+      return res.status(400).json({ error: "Invalid meal id" });
+    }
+
+    const meal = await knex("Meal")
+      .leftJoin("Reservation", "Meal.id", "Reservation.meal_id")
+      .select(
+        "Meal.id",
+        "Meal.max_reservations",
+        knex.raw(
+          "COALESCE(SUM(Reservation.number_of_guests), 0) AS total_reserved"
+        )
+      )
+
+      .where("Meal.id", mealId)
+      .groupBy("Meal.id", "Meal.max_reservations")
+      .first();
+
+    if (!meal) {
+      return res
+        .status(404)
+        .json({ error: `Meal with id ${mealId} does not exists` });
+    }
+
+    const totalReserved = parseInt(meal.total_reserved, 10) || 0;
+    const availableSpots = meal.max_reservations - totalReserved;
+
+    res.json({ available_spots: availableSpots });
   })
 );
 
