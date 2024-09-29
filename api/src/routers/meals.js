@@ -26,6 +26,7 @@ mealsRouter.get(
         "Meal.price",
         "Meal.max_reservations",
         "Meal.meal_when",
+        "Meal.image_url",
         knex.raw("coalesce(sum(r.number_of_guests),0) as total_reserved")
       )
       .leftJoin("Reservation as r", "Meal.id", "r.meal_id")
