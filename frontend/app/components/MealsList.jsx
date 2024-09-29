@@ -9,6 +9,7 @@ import {
   Alert,
 } from "@mui/material";
 import Meal from "./Meal";
+import Slider from "react-slick";
 
 function MealsList({ limit }) {
   const [meals, setMeals] = useState([]);
@@ -37,23 +38,39 @@ function MealsList({ limit }) {
 
   const displayedMeals = limit ? meals.slice(0, limit) : meals;
 
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
+  };
+
   return (
     <Container>
       {displayedMeals.length > 0 ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 2,
-            justifyContent: "space-around",
-          }}
-        >
+        <Slider {...sliderSettings}>
           {displayedMeals.map((meal) => (
-            <Box sx={{ width: "400px" }} key={meal.id}>
+            <Box sx={{ padding: 2 }} key={meal.id}>
               <Meal {...meal} />
             </Box>
           ))}
-        </Box>
+        </Slider>
       ) : (
         <Typography variant="body1">No meals available</Typography>
       )}

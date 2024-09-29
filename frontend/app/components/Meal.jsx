@@ -21,8 +21,8 @@ const Meal = ({ id, title, description, price, image_url }) => {
       <Box display="flex" alignItems="flex-start" width="100%">
         <Box
           mr={2}
-          width={200}
-          height={150}
+          width={400}
+          height={400}
           position="relative"
           overflow="hidden"
           borderRadius="8px"

@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
-import ContanctMailIcon from "@mui/icons-material/ContactMail";
-import ReserveIcon from "@mui/icons-material/EventSeat";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
+import EventSeatIcon from "@mui/icons-material/EventSeat";
 
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -32,13 +32,25 @@ export default function Navbar() {
     setDrawerOpen(!drawerOpen);
   };
   const navItems = [
-    { text: "Home", link: "/nav_bar", icon: <HomeIcon /> },
-    { text: "About", link: "/nav_bar/about", icon: <InfoIcon /> },
-    { text: "Contact", link: "/nav_bar/contact", icon: <ContanctMailIcon /> },
+    {
+      text: "Home",
+      link: "/nav_bar",
+      icon: <HomeIcon sx={{ color: isMobile ? "blue" : "inherit" }} />,
+    },
+    {
+      text: "About",
+      link: "/nav_bar/about",
+      icon: <InfoIcon sx={{ color: isMobile ? "blue" : "inherit" }} />,
+    },
+    {
+      text: "Contact",
+      link: "/nav_bar/contact",
+      icon: <ContactMailIcon sx={{ color: isMobile ? "blue" : "inherit" }} />,
+    },
     {
       text: "Reserve Your Spot",
       link: "/nav_bar/reserve",
-      icon: <ReserveIcon />,
+      icon: <EventSeatIcon sx={{ color: isMobile ? "blue" : "inherit" }} />,
     },
   ];
   return (
