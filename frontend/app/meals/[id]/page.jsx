@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { CircularProgress, Box, Typography, Alert } from "@mui/material";
+import { CircularProgress, Box, Typography, Alert, Stack } from "@mui/material";
 import ReserveMeal from "../../components/ReserveMeal";
 
 const SingleMeal = ({ params }) => {
@@ -72,9 +72,13 @@ const SingleMeal = ({ params }) => {
     );
   }
   return (
-    <Box>
-      <Box display="flex" alignItems="flex-start" sx={{ mt: 2 }}>
-        <Box sx={{ width: { xs: "100%", sm: "50%" }, mr: { sm: 2 } }}>
+    <Box sx={{ my: 4 }}>
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={4}
+        justtifyContent="space-between"
+      >
+        <Box sx={{ flex: 1 }}>
           <Typography variant="h4">{meal.title}</Typography>
           <Typography variant="body1">{meal.description}</Typography>
           <Typography variant="subtitle1">Price: ${meal.price}</Typography>
@@ -85,7 +89,7 @@ const SingleMeal = ({ params }) => {
           alt=""
           sx={{ width: "30%", height: "auto", mt: 2 }}
         />
-      </Box>
+      </Stack>
       <Box sx={{ width: { xs: "100%", sm: "35%" } }}>
         {availableSpots > 0 ? (
           <ReserveMeal mealId={id}></ReserveMeal>

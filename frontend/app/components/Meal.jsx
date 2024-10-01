@@ -16,13 +16,14 @@ const Meal = ({ id, title, description, price, image_url }) => {
         flexDirection: "column",
         justifyItems: "space-between",
         height: "100%",
+        maxWidth: "800px",
       }}
     >
       <Box display="flex" alignItems="flex-start" width="100%">
         <Box
           mr={2}
-          width={400}
-          height={400}
+          width={200}
+          height={300}
           position="relative"
           overflow="hidden"
           borderRadius="8px"
@@ -30,9 +31,8 @@ const Meal = ({ id, title, description, price, image_url }) => {
           <Image
             src={`/images/${imageUrl}`}
             alt={title}
-            layout="fill"
-            objectFit="contain"
-            style={{ objectPosition: "center" }}
+            fill
+            style={{ objectFit: "cover" }}
           />
         </Box>
         <ListItemText
