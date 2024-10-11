@@ -10,10 +10,12 @@ const SingleMeal = ({ params }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [availableSpots, setAvailableSpots] = useState(0);
+  const [submitted,setSubmitted]=useState(false);
 
   useEffect(() => {
     const fetchedMeal = async () => {
       try {
+        setLoading(true);
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/meals/${id}`
         );
@@ -27,13 +29,15 @@ const SingleMeal = ({ params }) => {
         }
       } catch (error) {
         setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     const fetchAvailableSpots = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/reservations/availability/${id}`
+          `${process.env.NEXT_PUBLIC_API_URL}/reservations/meal/${id}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -45,14 +49,14 @@ const SingleMeal = ({ params }) => {
         setError(error.message);
       }
     };
+
     fetchedMeal();
     fetchAvailableSpots();
-    setLoading(false);
   }, [id]);
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center">
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
         <CircularProgress />
       </Box>
     );
@@ -72,33 +76,35 @@ const SingleMeal = ({ params }) => {
     );
   }
   return (
-    <Box sx={{ my: 4 }}>
+    <Box sx={{ my: 4,px:2 }}>
       <Stack
         direction={{ xs: "column", md: "row" }}
-        spacing={4}
-        justtifyContent="space-between"
+        spacing={2}
+        justifyContent="center"
+        alignItems="flex-start"
       >
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="h4">{meal.title}</Typography>
-          <Typography variant="body1">{meal.description}</Typography>
-          <Typography variant="subtitle1">Price: ${meal.price}</Typography>
-        </Box>
+        <Box sx={{ flex: 2 }}>
+          <Typography variant="h4" gutterBottom>{meal.title}</Typography>
+          <Typography variant="body1" sx={{mb:2}}>{meal.description}</Typography>
+          <Typography variant="subtitle1" sx={{fontWeight:"bold"}}>Price: ${meal.price}</Typography>
+       
         <Box
           component="img"
           src={`/images/${meal.image_url}`}
           alt=""
-          sx={{ width: "30%", height: "auto", mt: 2 }}
+          sx={{ width: { xs: "100%", md: "50%" }, height: "auto", borderRadius: 2, boxShadow: 2 }}
         />
-      </Stack>
-      <Box sx={{ width: { xs: "100%", sm: "35%" } }}>
-        {availableSpots > 0 ? (
-          <ReserveMeal mealId={id}></ReserveMeal>
+      </Box>
+      <Box sx={{mt: {xs:4,md:0}, maxWidth:"400px" }}>
+        {availableSpots > 0||submitted ? (
+          <ReserveMeal mealId={id} availableSpots={availableSpots} setAvailableSpots={setAvailableSpots} setSubmitted={setSubmitted}></ReserveMeal>
         ) : (
           <Alert severity="warning">
             Sorry, this meal is fully booked. No reservations are available.
           </Alert>
         )}
       </Box>
+      </Stack>
     </Box>
   );
 };

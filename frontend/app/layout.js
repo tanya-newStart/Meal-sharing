@@ -30,9 +30,9 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body >
         <Navbar />
-        {children}
+        <main>  {children}</main>
         <Footer />
       </body>
     </html>

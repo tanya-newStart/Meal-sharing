@@ -3,28 +3,36 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import knex from "./database_client.js";
+import { Server } from "socket.io";
+import http from "http";
 import mealsRouter from "./routers/meals.js";
 import reservationsRouter from "./routers/reservations.js";
 import reviewsRouter from "./routers/reviews.js";
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
 app.use(cors());
 app.use(bodyParser.json());
 
 const apiRouter = express.Router();
 
-app.get("/my-route", (req, res) => {
-  res.send("Hi friend");
-});
+io.on("connection", (socket) => {
+  console.log("a user connected", socket.id);
 
-// You can delete this route once you add your own routes
-apiRouter.get("/", async (req, res) => {
-  const SHOW_TABLES_QUERY =
-    process.env.DB_CLIENT === "pg"
-      ? "SELECT * FROM pg_catalog.pg_tables;"
-      : "SHOW TABLES;";
-  const tables = await knex.raw(SHOW_TABLES_QUERY);
-  res.json({ tables });
+  socket.on("message", (msg) => {
+    console.log("message: " + msg);
+    io.emit("message", msg);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+
+  socket.on("reserve", (data) => {
+    io.emit("updateAvailableSpots", data.avaliableSpots);
+  });
 });
 
 apiRouter.get("/past-meals", async (req, res) => {

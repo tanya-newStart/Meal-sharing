@@ -9,9 +9,8 @@ const HomePage = () => {
         display="flex"
         flexDirection="column"
         justifyContent="center"
-        mt={2}
-        // height="100vh"
-        // overflow="hidden"
+        alignItems="center"
+        height="100vh"
       >
         <MealsList limit={3}></MealsList>
         <Link href="/meals" passHref>
