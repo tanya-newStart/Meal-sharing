@@ -128,4 +128,15 @@ reviewsRouter.delete(
   })
 );
 
+reviewsRouter.get(
+  "/meal/:meal_id",
+  asyncHandler(async (req, res) => {
+    const mealId = req.params.meal_id;
+    const reviews = await knex("Review")
+      .where({ meal_id: mealId })
+      .orderBy("id");
+    res.status(200).json(reviews);
+  })
+);
+
 export default reviewsRouter;
