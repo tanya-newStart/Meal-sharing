@@ -76,7 +76,7 @@ function MealsList({ limit }) {
   return (
     <Container
       maxWidth="md"
-      sx={{ position: "relative", paddingBottom: "40px" }}
+      sx={{ position: "relative", paddingBottom: "60px" }}
     >
       {displayedMeals.length > 0 ? (
         <Box sx={{ position: "relative", overflow: "visible" }}>
@@ -87,7 +87,7 @@ function MealsList({ limit }) {
             {...sliderSettings}
           >
             {displayedMeals.map((meal) => (
-              <Box sx={{ padding: 2 }} key={meal.id}>
+              <Box key={meal.id}>
                 <Meal {...meal} />
               </Box>
             ))}
@@ -96,7 +96,7 @@ function MealsList({ limit }) {
             sx={{
               position: "absolute",
               top: "50%",
-              left: "-110px",
+              left: "-10px",
               transform: "translateY(-50%)",
               zIndex: 2,
             }}
@@ -112,7 +112,7 @@ function MealsList({ limit }) {
             sx={{
               position: "absolute",
               top: "50%",
-              right: "-80px",
+              right: "-10px",
               transform: "translateY(-50%)",
               zIndex: 2,
             }}
