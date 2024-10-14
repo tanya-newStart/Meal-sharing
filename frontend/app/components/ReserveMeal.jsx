@@ -1,9 +1,12 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef,useEffect } from "react";
 import { Box, Typography, Button, Container, TextField } from "@mui/material";
 import Link from "next/link";
+import {io} from "socket.io-client";
 
-export default function ReserveMeal({ mealId }) {
+const socket = io(process.env.NEXT_PUBLIC_API_URL);
+
+export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,setSubmitted }) {
   const [formData, setFormData] = useState({
     customerName: "",
     email: "",
@@ -15,7 +18,17 @@ export default function ReserveMeal({ mealId }) {
   const emailRef = useRef(null);
   const phonenumberRef = useRef(null);
 
-  const [submitted, setSubmitted] = useState(false);
+  const[submittedSuccessfully,setSubmittedSuccessfully]=useState(false)
+
+  useEffect(() => {
+   socket.on("reservationCreated", (data) => {
+      setAvailableSpots(data.max_reservations - data.total_reserved);
+    });
+
+    return () => {
+      socket.close();
+    };
+  },[setAvailableSpots]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,6 +50,7 @@ export default function ReserveMeal({ mealId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let errorMessages = [];
+
     if (!validateField("customerName", formData.customerName)) {
       errorMessages.push(
         "First and last names should be at least 2 characters long and contain only letters."
@@ -48,6 +62,9 @@ export default function ReserveMeal({ mealId }) {
     if (!validateField("phonenumber", formData.phonenumber)) {
       errorMessages.push("Phone number should be an 8-digit number.");
     }
+    if (formData.numberOfGuests > availableSpots) {
+      errorMessages.push("Not enough spots available.");
+  }
     if (errorMessages.length > 0) {
       alert(errorMessages.join("\n"));
       return;
@@ -75,9 +92,25 @@ export default function ReserveMeal({ mealId }) {
         const errorData = await response.json();
         throw new Error(errorData.errors);
       }
-      const data = await response.json();
 
+      const data = await response.json();
+      const totalReserved =Number(data.total_reserved);
+      const maxReservations = Number(data.max_reservations);
+      const newAvailableSpots = maxReservations-totalReserved;
+
+      socket.emit("reserve", { availableSpots: newAvailableSpots });
+
+      setAvailableSpots(newAvailableSpots);
+      setSubmittedSuccessfully(true);
       setSubmitted(true);
+    
+      setFormData({
+        customerName: "",
+        email: "",
+        phonenumber: "",
+        numberOfGuests: 1,
+      });
+     
     } catch (error) {
       alert(error.message);
     }
@@ -98,6 +131,7 @@ export default function ReserveMeal({ mealId }) {
         <Typography variant="h5" gutterBottom>
           Reservation Form
         </Typography>
+      
       </Box>
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
         <TextField
@@ -155,21 +189,16 @@ export default function ReserveMeal({ mealId }) {
         >
           Book Seat
         </Button>
-        {submitted && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body1">
-              Form submitted successfully!
-            </Typography>
-            <Typography variant="body1" sx={{ mt: 2 }}>
-              Thank you for signing up!
-            </Typography>
+        {submittedSuccessfully && (
+          <Typography variant="body1" color="success.main">
+            Thank you for your booking!
+          </Typography>
+        )}
             <Link href="/" passHref>
               <Button variant="outlined" color="primary">
                 Back to Home
               </Button>
             </Link>
-          </Box>
-        )}
       </Box>
     </Container>
   );

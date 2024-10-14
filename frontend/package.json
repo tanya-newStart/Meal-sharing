@@ -14,10 +14,15 @@
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.1",
     "axios": "^1.7.7",
+    "jquery": "^3.7.1",
     "next": "14.2.12",
     "react": "^18",
     "react-dom": "^18",
     "react-slick": "^0.30.2",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.8.0"
+  },
+  "devDependencies": {
+    "@types/react-slick": "^0.23.13"
   }
 }

@@ -67,6 +67,8 @@ reviewsRouter.post(
     };
 
     const errors = validateReviewData(data);
+    console.log(errors);
+
     if (errors.length > 0) return res.status(400).json({ errors });
 
     const result = await knex("Review").insert({
@@ -125,6 +127,17 @@ reviewsRouter.delete(
     res
       .status(200)
       .json({ message: `Review with id ${id} was deleted successfully` });
+  })
+);
+
+reviewsRouter.get(
+  "/meal/:meal_id",
+  asyncHandler(async (req, res) => {
+    const mealId = req.params.meal_id;
+    const reviews = await knex("Review")
+      .where({ meal_id: mealId })
+      .orderBy("id");
+    res.status(200).json(reviews);
   })
 );
 

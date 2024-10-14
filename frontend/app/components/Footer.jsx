@@ -10,8 +10,7 @@ const Footer = () => {
         background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
         textAlign: "center",
         width: "100%",
-        position: "absolute",
-        bottom: 0,
+       
       }}
     >
       <Container>

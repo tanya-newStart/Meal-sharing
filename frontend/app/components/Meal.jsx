@@ -1,91 +1,82 @@
-import { ListItem, ListItemText, Typography, Box, Button } from "@mui/material";
+import { Card, CardContent, Typography, Box, Button } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
 const Meal = ({ id, title, description, price, image_url }) => {
   const imageUrl = image_url || "default.jpg";
   return (
-    <ListItem
-      sx={{
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        mb: 2,
-        p: 2,
-        bgcolor: "#f9f9f9",
-        display: "flex",
-        flexDirection: "column",
-        justifyItems: "space-between",
-        height: "100%",
-      }}
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
     >
-      <Box display="flex" alignItems="flex-start" width="100%">
-        <Box
-          mr={2}
-          width={400}
-          height={400}
-          position="relative"
-          overflow="hidden"
-          borderRadius="8px"
-        >
+      <Card
+        sx={{
+          maxWidth: 450,
+          borderRadius: "16px",
+          boxShadow: 3,
+        }}
+      >
+        <Box sx={{ position: "relative", height: "340px" }}>
           <Image
             src={`/images/${imageUrl}`}
             alt={title}
-            layout="fill"
-            objectFit="contain"
-            style={{ objectPosition: "center" }}
+            width={400}
+            height={300}
+            priority
+            // fill
+            style={{ borderRadius: "16px 16px 0 0", objectFit: "cover" }}
           />
         </Box>
-        <ListItemText
-          primary={
-            <Typography variant="h6" color="primary" noWrap>
+        <CardContent>
+          <Box display="flex" justifyContent="space-between" mb={2}>
+            <Typography variant="h5" component="div" fontWeight="500">
               {title}
             </Typography>
-          }
-          secondary={
-            <Box>
-              <Typography variant="body2" color="textSecondary" gutterBottom>
-                {description}
-              </Typography>
-              <Typography
-                variant="body1"
-                fontWeight="bold"
-                color="secondary"
-                position="relative"
-              >
-                Price: ${price}
-              </Typography>
-            </Box>
-          }
-        />
-        <Box
-          ml={2}
-          mt={2}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Link href={`/meals/${id}`} passHref>
-            <Button
-              variant="contained"
-              color="primary"
+            <Typography
+              variant="body1"
               sx={{
+                backgroundColor: "green",
+                color: "white",
+                padding: "0.25rem 0.5rem",
                 borderRadius: "8px",
-                padding: "4px 8px",
-                fontSize: "0.8rem",
-                width: "90px",
-                height: "60px",
-                "&:hover": {
-                  backgroundColor: "#fafad2",
-                  color: "black",
-                },
               }}
             >
-              Savor the Details!
-            </Button>
-          </Link>
-        </Box>
-      </Box>
-    </ListItem>
+              ${price}
+            </Typography>
+          </Box>
+          <Typography variant="body2" color="text.secondary">
+            {description}
+          </Typography>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            marginTop="16px"
+          >
+            <Link href={`/meals/${id}`} passHref>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  fontSize: "0.9rem",
+                  marginTop: "16px",
+                  "&:hover": {
+                    backgroundColor: "#fafad2",
+                    color: "black",
+                  },
+                }}
+              >
+                Savor the Details!
+              </Button>
+            </Link>
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 
