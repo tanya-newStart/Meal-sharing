@@ -10,13 +10,15 @@ const HomePage = () => {
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
-        height="100vh"
+        minHeight="100vh"
+        sx={{ padding: 2 }}
       >
-        <MealsList limit={3}></MealsList>
+        <MealsList limit={5} layout="slider"></MealsList>
         <Link href="/meals" passHref>
           <Typography
             variant="h6"
             sx={{
+              marginTop: 2,
               textDecoration: "none",
               color: "primary.main",
               fontWeight: "bold",
@@ -26,7 +28,7 @@ const HomePage = () => {
               },
             }}
           >
-            See all
+            See all meals
           </Typography>
         </Link>
       </Box>

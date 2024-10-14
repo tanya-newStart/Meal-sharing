@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchBar from "./SearchBar";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -64,7 +63,6 @@ export default function Navbar() {
         >
           MealHub
         </Typography>
-        <SearchBar sx={{ mr: 2 }} />
         {isMobile ? (
           <>
             <IconButton

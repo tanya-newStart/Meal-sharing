@@ -3,7 +3,7 @@ import MealsList from "../components/MealsList";
 const AllMeals = () => {
   return (
     <>
-      <MealsList />
+      <MealsList layout="grid" />
     </>
   );
 };

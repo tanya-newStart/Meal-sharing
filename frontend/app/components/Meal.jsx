@@ -5,12 +5,7 @@ import Link from "next/link";
 const Meal = ({ id, title, description, price, image_url }) => {
   const imageUrl = image_url || "default.jpg";
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-    >
+    <Box display="flex" justifyContent="center" alignItems="center">
       <Card
         sx={{
           maxWidth: 450,

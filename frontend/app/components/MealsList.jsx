@@ -8,37 +8,47 @@ import {
   CircularProgress,
   Alert,
   Button,
+  Card,
+  CardContent,
+  CardMedia,
 } from "@mui/material";
 import Meal from "./Meal";
+import SearchMeal from "./SearchMeal";
 import Slider from "react-slick";
 
-function MealsList({ limit }) {
+function MealsList({ limit, layout }) {
   const [meals, setMeals] = useState([]);
+  const [filteredMeals, setFilteredMeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   let sliderRef = useRef(null);
 
-  useEffect(() => {
-    const fetchMeals = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/all-meals`
-        );
-        setMeals(response.data.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setLoading(false);
-      }
-    };
+  const fetchMeals = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/all-meals`
+      );
+      setMeals(response.data.data);
+      setFilteredMeals(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchMeals();
   }, []);
 
+  const handleFilteredMealsChange = (newFilteredMeals) => {
+    setFilteredMeals(newFilteredMeals);
+  };
   if (loading) return <CircularProgress />;
   if (error) return <Alert severity="error">Error: {error}</Alert>;
 
-  const displayedMeals = limit ? meals.slice(0, limit) : meals;
+  const displayedMeals = limit ? filteredMeals.slice(0, limit) : filteredMeals;
 
   function PreviousNextMethods() {
     const next = () => {
@@ -73,7 +83,7 @@ function MealsList({ limit }) {
     ],
   };
 
-  return (
+  return layout === "slider" ? (
     <Container
       maxWidth="md"
       sx={{ position: "relative", paddingBottom: "60px" }}
@@ -128,6 +138,29 @@ function MealsList({ limit }) {
       ) : (
         <Typography variant="body1">No meals available</Typography>
       )}
+    </Container>
+  ) : (
+    <Container maxWidth="lg">
+      <SearchMeal
+        onFilteredMealsChange={handleFilteredMealsChange}
+        meals={meals}
+      />
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
+          gap: 3,
+          padding: 4,
+          width: "100%",
+          justifyContent: "center",
+        }}
+      >
+        {displayedMeals.map((meal) => (
+          <Box key={meal.id} sx={{ display: "flex", justifyContent: "center" }}>
+            <Meal {...meal} />
+          </Box>
+        ))}
+      </Box>
     </Container>
   );
 }
