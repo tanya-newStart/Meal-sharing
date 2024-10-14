@@ -10,7 +10,7 @@ import {
   Stack,
 } from "@mui/material";
 
-const SubmitReview = ({ mealId }) => {
+const SubmitReview = ({ mealId, onSubmit }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [stars, setStars] = useState(0);
@@ -20,7 +20,7 @@ const SubmitReview = ({ mealId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !description || !stars) {
+    if (!title || !description || stars === 0) {
       setError("Please fill in all fields");
       return;
     }
@@ -32,15 +32,17 @@ const SubmitReview = ({ mealId }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            title,
-            description,
-            stars,
-            meal_id: mealId,
-          }),
+          body: JSON.stringify({ title, description, stars, meal_id: mealId }),
         }
       );
       if (response.ok) {
+        const newReview = await response.json();
+        onSubmit({
+          title,
+          description,
+          stars,
+        });
+
         setSuccess(true);
         setTitle("");
         setDescription("");

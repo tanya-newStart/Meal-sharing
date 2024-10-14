@@ -19,7 +19,7 @@ const SingleMeal = ({ params }) => {
   const [meal, setMeal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [availableSpots, setAvailableSpots] = useState(0);
+  const [availableSpots, setAvailableSpots] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [showReviews, setShowReviews] = useState(false);
@@ -32,7 +32,6 @@ const SingleMeal = ({ params }) => {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/meals/${id}`
         );
-        console.log(response.status);
 
         if (response.ok) {
           const data = await response.json();
@@ -83,6 +82,11 @@ const SingleMeal = ({ params }) => {
     fetchAvailableSpots();
     fetchReviews();
   }, [id]);
+
+  const handleReviewSubmit = (newReview) => {
+    console.log("New review:", newReview);
+    setReviews((prevReviews) => [newReview, ...prevReviews]);
+  };
 
   if (loading) {
     return (
@@ -186,7 +190,7 @@ const SingleMeal = ({ params }) => {
                       </Typography>
                       <Rating
                         name="read-only"
-                        value={reviews[0].stars}
+                        value={review.stars}
                         readOnly
                       ></Rating>
                     </Box>
@@ -209,7 +213,10 @@ const SingleMeal = ({ params }) => {
           )}
         </Box>
         <Box sx={{ mt: { xs: 4, md: 0 }, maxWidth: "400px" }}>
-          <SubmitReview mealId={id}></SubmitReview>
+          <SubmitReview
+            mealId={id}
+            onSubmit={handleReviewSubmit}
+          ></SubmitReview>
         </Box>
       </Stack>
     </Box>

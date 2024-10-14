@@ -1,12 +1,14 @@
 "use client";
-import { useState, useRef,useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Box, Typography, Button, Container, TextField } from "@mui/material";
 import Link from "next/link";
-import {io} from "socket.io-client";
 
-const socket = io(process.env.NEXT_PUBLIC_API_URL);
-
-export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,setSubmitted }) {
+export default function ReserveMeal({
+  mealId,
+  availableSpots,
+  setAvailableSpots,
+  setSubmitted,
+}) {
   const [formData, setFormData] = useState({
     customerName: "",
     email: "",
@@ -18,17 +20,7 @@ export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,se
   const emailRef = useRef(null);
   const phonenumberRef = useRef(null);
 
-  const[submittedSuccessfully,setSubmittedSuccessfully]=useState(false)
-
-  useEffect(() => {
-   socket.on("reservationCreated", (data) => {
-      setAvailableSpots(data.max_reservations - data.total_reserved);
-    });
-
-    return () => {
-      socket.close();
-    };
-  },[setAvailableSpots]);
+  const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,7 +56,7 @@ export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,se
     }
     if (formData.numberOfGuests > availableSpots) {
       errorMessages.push("Not enough spots available.");
-  }
+    }
     if (errorMessages.length > 0) {
       alert(errorMessages.join("\n"));
       return;
@@ -94,23 +86,20 @@ export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,se
       }
 
       const data = await response.json();
-      const totalReserved =Number(data.total_reserved);
+      const totalReserved = Number(data.total_reserved);
       const maxReservations = Number(data.max_reservations);
-      const newAvailableSpots = maxReservations-totalReserved;
-
-      socket.emit("reserve", { availableSpots: newAvailableSpots });
+      const newAvailableSpots = maxReservations - totalReserved;
 
       setAvailableSpots(newAvailableSpots);
       setSubmittedSuccessfully(true);
       setSubmitted(true);
-    
+
       setFormData({
         customerName: "",
         email: "",
         phonenumber: "",
         numberOfGuests: 1,
       });
-     
     } catch (error) {
       alert(error.message);
     }
@@ -131,7 +120,6 @@ export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,se
         <Typography variant="h5" gutterBottom>
           Reservation Form
         </Typography>
-      
       </Box>
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
         <TextField
@@ -194,11 +182,11 @@ export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,se
             Thank you for your booking!
           </Typography>
         )}
-            <Link href="/" passHref>
-              <Button variant="outlined" color="primary">
-                Back to Home
-              </Button>
-            </Link>
+        <Link href="/" passHref>
+          <Button variant="outlined" color="primary">
+            Back to Home
+          </Button>
+        </Link>
       </Box>
     </Container>
   );

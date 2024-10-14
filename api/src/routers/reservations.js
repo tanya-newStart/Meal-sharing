@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import express from "express";
 import knex from "../database_client.js";
 import asyncHandler from "./error_handler.js";

@@ -67,19 +67,11 @@ reviewsRouter.post(
     };
 
     const errors = validateReviewData(data);
-    console.log(errors);
 
     if (errors.length > 0) return res.status(400).json({ errors });
 
-    const result = await knex("Review").insert({
-      title,
-      description,
-      meal_id,
-      stars,
-    });
-    res.status(201).json({
-      success: `The review with id ${result} was created successfully`,
-    });
+    const [result] = await knex("Review").insert(data);
+    res.status(201).json(result);
   })
 );
 
