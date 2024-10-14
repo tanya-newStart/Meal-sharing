@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import express from "express";
 import knex from "../database_client.js";
 import asyncHandler from "./error_handler.js";
@@ -78,12 +80,11 @@ reservationsRouter.post(
       .groupBy("Meal.id", "Meal.max_reservations")
       .first();
 
-
     if (!meal) {
       errors.push(`meal with id ${meal_id} does not exists.`);
     }
 
-    const totalReserved = parseInt(meal.total_reserved,10) || 0;
+    const totalReserved = parseInt(meal.total_reserved, 10) || 0;
     const availableSpots = meal.max_reservations - totalReserved;
 
     if (number_of_guests > availableSpots) {
@@ -101,13 +102,14 @@ reservationsRouter.post(
       contact_name,
       contact_email,
     });
-    
-    const updatedMeal = await knex("Meal").leftJoin("Reservation", "Meal.id", "Reservation.meal_id")
-    .select("Meal.id", "Meal.max_reservations")
-    .sum("Reservation.number_of_guests as total_reserved")
-    .where("Meal.id", meal_id)
-    .groupBy("Meal.id", "Meal.max_reservations")
-    .first();
+
+    const updatedMeal = await knex("Meal")
+      .leftJoin("Reservation", "Meal.id", "Reservation.meal_id")
+      .select("Meal.id", "Meal.max_reservations")
+      .sum("Reservation.number_of_guests as total_reserved")
+      .where("Meal.id", meal_id)
+      .groupBy("Meal.id", "Meal.max_reservations")
+      .first();
 
     res.status(201).json({
       status: "success",
@@ -115,7 +117,6 @@ reservationsRouter.post(
       max_reservations: updatedMeal.max_reservations,
     });
   })
-
 );
 
 reservationsRouter.get(
@@ -224,10 +225,10 @@ reservationsRouter.delete(
   })
 );
 
-reservationsRouter.get(`/meal/:id`, 
+reservationsRouter.get(
+  `/meal/:id`,
   asyncHandler(async (req, res) => {
- 
-    const  meal_id  = Number(req.params.id);
+    const meal_id = Number(req.params.id);
 
     if (isNaN(meal_id)) {
       return res.status(400).json({ message: "Invalid meal ID" });
@@ -238,18 +239,17 @@ reservationsRouter.get(`/meal/:id`,
       .sum("number_of_guests as total_reserved");
 
     const totalReserved = Number(totalReservedResponse[0]?.total_reserved) || 0;
-   
-    const meal = await knex("Meal").where("id",meal_id).first();
 
-    if(!meal){
-      return res.status(404).json({message:"Meal not found"});
+    const meal = await knex("Meal").where("id", meal_id).first();
+
+    if (!meal) {
+      return res.status(404).json({ message: "Meal not found" });
     }
 
-    const availableSpots = meal.max_reservations-totalReserved;
+    const availableSpots = meal.max_reservations - totalReserved;
 
-    res.json({available_spots:availableSpots});
+    res.json({ available_spots: availableSpots });
   })
-   
 );
 
 export default reservationsRouter;

@@ -85,8 +85,6 @@ apiRouter.use("/meals", mealsRouter);
 
 apiRouter.use("/reservations", reservationsRouter);
 
-apiRouter.use("/reviews", mealsRouter);
-
 apiRouter.use("/reviews", reviewsRouter);
 
 app.use("/api", apiRouter);
@@ -94,7 +92,7 @@ app.use("/api", apiRouter);
 app.use((err, req, res, next) => {
   res
     .status(err.status || 500)
-    .json({ message: err.message || "An unexpected error occured" });
+    .json({ message: err.message || "An unexpected error occurred" });
 });
 
 app.listen(process.env.PORT, () => {

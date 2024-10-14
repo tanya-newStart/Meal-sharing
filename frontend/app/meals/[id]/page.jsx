@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import ReserveMeal from "../../components/ReserveMeal";
+import SubmitReview from "../../components/SubmitReview";
 
 const SingleMeal = ({ params }) => {
   const { id } = params;
@@ -22,6 +23,7 @@ const SingleMeal = ({ params }) => {
   const [submitted, setSubmitted] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [showReviews, setShowReviews] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
 
   useEffect(() => {
     const fetchedMeal = async () => {
@@ -205,6 +207,9 @@ const SingleMeal = ({ params }) => {
           ) : (
             <Alert severity="warning">Sorry, this meal is fully booked.</Alert>
           )}
+        </Box>
+        <Box sx={{ mt: { xs: 4, md: 0 }, maxWidth: "400px" }}>
+          <SubmitReview mealId={id}></SubmitReview>
         </Box>
       </Stack>
     </Box>
