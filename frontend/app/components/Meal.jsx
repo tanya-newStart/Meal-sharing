@@ -2,7 +2,15 @@ import { Card, CardContent, Typography, Box, Button } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
-const Meal = ({ id, title, description, price, image_url }) => {
+const Meal = ({
+  id,
+  title,
+  description,
+  price,
+  image_url,
+  customButton,
+  showSavorDetailsLink = true,
+}) => {
   const imageUrl = image_url || "default.jpg";
   return (
     <Box display="flex" justifyContent="center" alignItems="center">
@@ -50,24 +58,27 @@ const Meal = ({ id, title, description, price, image_url }) => {
             alignItems="center"
             marginTop="16px"
           >
-            <Link href={`/meals/${id}`} passHref>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  borderRadius: "8px",
-                  padding: "8px 16px",
-                  fontSize: "0.9rem",
-                  marginTop: "16px",
-                  "&:hover": {
-                    backgroundColor: "#fafad2",
-                    color: "black",
-                  },
-                }}
-              >
-                Savor the Details!
-              </Button>
-            </Link>
+            {customButton}
+            {showSavorDetailsLink && (
+              <Link href={`/meals/${id}`} passHref>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    borderRadius: "8px",
+                    padding: "8px 16px",
+                    fontSize: "0.9rem",
+                    marginTop: "16px",
+                    "&:hover": {
+                      backgroundColor: "#fafad2",
+                      color: "black",
+                    },
+                  }}
+                >
+                  Savor the Details!
+                </Button>
+              </Link>
+            )}
           </Box>
         </CardContent>
       </Card>

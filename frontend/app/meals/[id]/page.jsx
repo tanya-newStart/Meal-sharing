@@ -10,12 +10,13 @@ import {
   Collapse,
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
+import Meal from "@/app/components/Meal";
 import ReserveMeal from "../../components/ReserveMeal";
 import SubmitReview from "../../components/SubmitReview";
+import CustomMealButton from "@/app/components/CustomMealButton";
 
 const SingleMeal = ({ params }) => {
   const { id } = params;
-
   const [meal, setMeal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -88,6 +89,12 @@ const SingleMeal = ({ params }) => {
     setReviews((prevReviews) => [newReview, ...prevReviews]);
   };
 
+  const handleReserve = () => {
+    console.log("Reserve");
+  };
+  const handleAddToWishList = () => {
+    console.log("Wish");
+  };
   if (loading) {
     return (
       <Box
@@ -123,26 +130,16 @@ const SingleMeal = ({ params }) => {
         alignItems="flex-start"
       >
         <Box sx={{ flex: 2 }}>
-          <Typography variant="h4" gutterBottom>
-            {meal.title}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            {meal.description}
-          </Typography>
-          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-            Price: ${meal.price}
-          </Typography>
-
-          <Box
-            component="img"
-            src={`/images/${meal.image_url}`}
-            alt=""
-            sx={{
-              width: { xs: "100%", md: "50%" },
-              height: "auto",
-              borderRadius: 2,
-              boxShadow: 2,
-            }}
+          <Meal
+            {...meal}
+            customButton={
+              <CustomMealButton
+                availableSpots={availableSpots}
+                onReserve={handleReserve}
+                onAddToWishList={handleAddToWishList}
+              />
+            }
+            showSavorDetailsLink={false}
           />
           <Box sx={{ mt: 2 }}>
             {reviews.length > 0 ? (
