@@ -16,7 +16,7 @@ import Meal from "./Meal";
 import SearchMeal from "./SearchMeal";
 import Slider from "react-slick";
 
-function MealsList({ limit, layout }) {
+function MealsList({ limit, layout, sortKey, sortDir }) {
   const [meals, setMeals] = useState([]);
   const [filteredMeals, setFilteredMeals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ function MealsList({ limit, layout }) {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/all-meals`
+        `${process.env.NEXT_PUBLIC_API_URL}/meals?sortKey=${sortKey}&sortDir=${sortDir}`
       );
       setMeals(response.data.data);
       setFilteredMeals(response.data.data);
@@ -40,7 +40,7 @@ function MealsList({ limit, layout }) {
 
   useEffect(() => {
     fetchMeals();
-  }, []);
+  }, [sortKey, sortDir]);
 
   const handleFilteredMealsChange = (newFilteredMeals) => {
     setFilteredMeals(newFilteredMeals);

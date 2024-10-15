@@ -1,10 +1,30 @@
+"use client";
+import { useState } from "react";
 import MealsList from "../components/MealsList";
+import SortingControls from "../components/SortingControls";
+import { Box } from "@mui/material";
 
 const AllMeals = () => {
+  const [sortKey, setSortKey] = useState("meal_when");
+  const [sortDir, setSortDir] = useState("asc");
+
+  const handleSortKeyChange = (e) => {
+    setSortKey(e.target.value);
+  };
+
+  const handleSortDirChange = (e) => {
+    setSortDir(e.target.value);
+  };
   return (
-    <>
-      <MealsList layout="grid" />
-    </>
+    <Box sx={{ p: 2 }}>
+      <SortingControls
+        sortKey={sortKey}
+        sortDir={sortDir}
+        onSortKeyChange={handleSortKeyChange}
+        onSortDirChange={handleSortDirChange}
+      />
+      <MealsList layout="grid" sortKey={sortKey} sortDir={sortDir} />
+    </Box>
   );
 };
 export default AllMeals;
