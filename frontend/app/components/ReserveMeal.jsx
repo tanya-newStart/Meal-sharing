@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Button,
-  Container,
   TextField,
   Modal,
   IconButton,
@@ -26,10 +25,6 @@ export default function ReserveMeal({
     phonenumber: "",
     numberOfGuests: 1,
   });
-
-  const customerNameRef = useRef(null);
-  const emailRef = useRef(null);
-  const phonenumberRef = useRef(null);
 
   const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
 
@@ -159,7 +154,6 @@ export default function ReserveMeal({
             onChange={handleChange}
             required
             fullWidth
-            inputRef={customerNameRef}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -170,6 +164,7 @@ export default function ReserveMeal({
             onChange={handleChange}
             required
             fullWidth
+            sx={{ mb: 2 }}
           ></TextField>
           <TextField
             label="Email"
@@ -180,7 +175,6 @@ export default function ReserveMeal({
             onChange={handleChange}
             required
             fullWidth
-            inputRef={emailRef}
             sx={{ mb: 2 }}
           />
 
@@ -194,28 +188,35 @@ export default function ReserveMeal({
             onChange={handleChange}
             required
             fullWidth
-            inputRef={phonenumberRef}
             sx={{ mb: 2 }}
           />
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 2,
+              mt: 2,
+            }}
           >
-            Book Seat
-          </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+            >
+              Book Seat
+            </Button>
+            <Link href="/" passHref>
+              <Button variant="outlined" color="primary" sx={{ mt: 2 }}>
+                Back to Home
+              </Button>
+            </Link>
+          </Box>
           {submittedSuccessfully && (
             <Typography variant="body1" color="success.main">
               Thank you for your booking!
             </Typography>
           )}
-          <Link href="/" passHref>
-            <Button variant="outlined" color="primary">
-              Back to Home
-            </Button>
-          </Link>
         </Box>
       </Box>
     </Modal>

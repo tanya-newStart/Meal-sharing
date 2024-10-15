@@ -253,4 +253,69 @@ mealsRouter.get(
   })
 );
 
+mealsRouter.get(
+  "/:id/wishlist",
+  asyncHandler(async (req, res) => {
+    const mealId = Number(req.params.id);
+
+    const [result] = await knex("WishList")
+      .where({ meal_id: mealId })
+      .select("wish_count");
+
+    const wishCount = result ? result.wish_count : 0;
+
+    res.json({ wish_count: wishCount });
+  })
+);
+
+mealsRouter.post(
+  "/:id/wishlist",
+  asyncHandler(async (req, res) => {
+    const mealId = Number(req.params.id);
+
+    const [existingWish] = await knex("WishList").where({ meal_id: mealId });
+
+    if (existingWish) {
+      await knex("WishList")
+        .where({ meal_id: mealId })
+        .increment("wish_count", 1);
+    } else {
+      await knex("WishList").insert({ meal_id: mealId, wish_count: 1 });
+    }
+
+    const [updatedResult] = await knex("WishList")
+      .where({ meal_id: mealId })
+      .select("wish_count");
+
+    const updatedWishCount = updatedResult ? updatedResult.wish_count : 0;
+
+    res.json({ wish_count: updatedWishCount });
+  })
+);
+
+mealsRouter.delete(
+  "/:id/wishlist",
+  asyncHandler(async (req, res) => {
+    const mealId = Number(req.params.id);
+    const [existingWish] = await knex("WishList").where({ meal_id: mealId });
+    if (existingWish) {
+      if (existingWish.wish_count > 1) {
+        await knex("WishList")
+          .where({ meal_id: mealId })
+          .decrement("wish_count", 1);
+      } else {
+        await knex("WishList").where({ meal_id: mealId }).delete();
+      }
+      const [updatedResult] = await knex("WishList")
+        .where({ meal_id: mealId })
+        .select("wish_count");
+
+      const updatedWishCount = updatedResult ? updatedResult.wish_count : 0;
+      res.json({ wish_count: updatedWishCount });
+    } else {
+      res.status(404).json({ message: "Meal not found in wishlist" });
+    }
+  })
+);
+
 export default mealsRouter;

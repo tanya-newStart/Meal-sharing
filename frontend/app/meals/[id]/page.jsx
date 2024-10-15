@@ -97,9 +97,6 @@ const SingleMeal = ({ params }) => {
     setIsReserveModalOpen(false);
   };
 
-  const handleAddToWishList = () => {
-    console.log("Wish");
-  };
   if (loading) {
     return (
       <Box
@@ -139,9 +136,9 @@ const SingleMeal = ({ params }) => {
             {...meal}
             customButton={
               <CustomMealButton
+                mealId={id}
                 availableSpots={availableSpots}
                 onReserve={handleReserve}
-                onAddToWishList={handleAddToWishList}
               />
             }
             showSavorDetailsLink={false}
