@@ -8,9 +8,6 @@ import {
   CircularProgress,
   Alert,
   Button,
-  Card,
-  CardContent,
-  CardMedia,
 } from "@mui/material";
 import Meal from "./Meal";
 import SearchMeal from "./SearchMeal";
@@ -86,7 +83,7 @@ function MealsList({ limit, layout, sortKey, sortDir }) {
   return layout === "slider" ? (
     <Container
       maxWidth="md"
-      sx={{ position: "relative", paddingBottom: "60px" }}
+      sx={{ position: "relative", paddingBottom: "20px" }}
     >
       {displayedMeals.length > 0 ? (
         <Box sx={{ position: "relative", overflow: "visible" }}>
@@ -97,7 +94,7 @@ function MealsList({ limit, layout, sortKey, sortDir }) {
             {...sliderSettings}
           >
             {displayedMeals.map((meal) => (
-              <Box key={meal.id}>
+              <Box key={meal.id} sx={{ px: 1, mb: 4 }}>
                 <Meal {...meal} />
               </Box>
             ))}

@@ -16,7 +16,16 @@ const AllMeals = () => {
     setSortDir(e.target.value);
   };
   return (
-    <Box sx={{ p: 2 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 2,
+        p: 2,
+      }}
+    >
       <SortingControls
         sortKey={sortKey}
         sortDir={sortDir}

@@ -47,7 +47,6 @@ export default function Navbar() {
         background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
         boxShadow: "none",
         padding: "0.5rem 0",
-        mb: 4,
       }}
     >
       <Toolbar>
