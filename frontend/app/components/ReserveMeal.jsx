@@ -1,13 +1,24 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { Box, Typography, Button, Container, TextField } from "@mui/material";
+import { useState, useRef } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Container,
+  TextField,
+  Modal,
+  IconButton,
+} from "@mui/material";
 import Link from "next/link";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function ReserveMeal({
   mealId,
   availableSpots,
   setAvailableSpots,
   setSubmitted,
+  open,
+  onClose,
 }) {
   const [formData, setFormData] = useState({
     customerName: "",
@@ -105,89 +116,108 @@ export default function ReserveMeal({
     }
   };
   return (
-    <Container component="main" maxWidth="xs">
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="reservation-modal-title"
+    >
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 8,
-          p: 3,
-          borderRadius: 1,
-          boxShadow: 1,
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 2,
         }}
       >
-        <Typography variant="h5" gutterBottom>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{ position: "absolute", right: 8, top: 8 }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography
+          id="reservation-modal-title"
+          variant="h6"
+          component="h2"
+          gutterBottom
+        >
           Reservation Form
         </Typography>
-      </Box>
-      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-        <TextField
-          label="Name"
-          variant="outlined"
-          name="customerName"
-          value={formData.customerName}
-          onChange={handleChange}
-          required
-          fullWidth
-          inputRef={customerNameRef}
-          sx={{ mb: 2 }}
-        />
-        <TextField
-          label="Number of Guests"
-          name="numberOfGuests"
-          type="number"
-          value={formData.numberOfGuests}
-          onChange={handleChange}
-          required
-          fullWidth
-        ></TextField>
-        <TextField
-          label="Email"
-          type="email"
-          name="email"
-          variant="outlined"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          fullWidth
-          inputRef={emailRef}
-          sx={{ mb: 2 }}
-        />
 
-        <TextField
-          label="Phone number"
-          type="tel"
-          id="phonenumber"
-          name="phonenumber"
-          variant="outlined"
-          value={formData.phonenumber}
-          onChange={handleChange}
-          required
-          fullWidth
-          inputRef={phonenumberRef}
-          sx={{ mb: 2 }}
-        />
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          <TextField
+            label="Name"
+            variant="outlined"
+            name="customerName"
+            value={formData.customerName}
+            onChange={handleChange}
+            required
+            fullWidth
+            inputRef={customerNameRef}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Number of Guests"
+            name="numberOfGuests"
+            type="number"
+            value={formData.numberOfGuests}
+            onChange={handleChange}
+            required
+            fullWidth
+          ></TextField>
+          <TextField
+            label="Email"
+            type="email"
+            name="email"
+            variant="outlined"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            fullWidth
+            inputRef={emailRef}
+            sx={{ mb: 2 }}
+          />
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2 }}
-        >
-          Book Seat
-        </Button>
-        {submittedSuccessfully && (
-          <Typography variant="body1" color="success.main">
-            Thank you for your booking!
-          </Typography>
-        )}
-        <Link href="/" passHref>
-          <Button variant="outlined" color="primary">
-            Back to Home
+          <TextField
+            label="Phone number"
+            type="tel"
+            id="phonenumber"
+            name="phonenumber"
+            variant="outlined"
+            value={formData.phonenumber}
+            onChange={handleChange}
+            required
+            fullWidth
+            inputRef={phonenumberRef}
+            sx={{ mb: 2 }}
+          />
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
+            Book Seat
           </Button>
-        </Link>
+          {submittedSuccessfully && (
+            <Typography variant="body1" color="success.main">
+              Thank you for your booking!
+            </Typography>
+          )}
+          <Link href="/" passHref>
+            <Button variant="outlined" color="primary">
+              Back to Home
+            </Button>
+          </Link>
+        </Box>
       </Box>
-    </Container>
+    </Modal>
   );
 }

@@ -24,7 +24,7 @@ const SingleMeal = ({ params }) => {
   const [submitted, setSubmitted] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [showReviews, setShowReviews] = useState(false);
-  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchedMeal = async () => {
@@ -90,8 +90,13 @@ const SingleMeal = ({ params }) => {
   };
 
   const handleReserve = () => {
-    console.log("Reserve");
+    setIsReserveModalOpen(true);
   };
+
+  const handleCloseReserveModal = () => {
+    setIsReserveModalOpen(false);
+  };
+
   const handleAddToWishList = () => {
     console.log("Wish");
   };
@@ -204,6 +209,8 @@ const SingleMeal = ({ params }) => {
               availableSpots={availableSpots}
               setAvailableSpots={setAvailableSpots}
               setSubmitted={setSubmitted}
+              open={isReserveModalOpen}
+              onClose={handleCloseReserveModal}
             ></ReserveMeal>
           ) : (
             <Alert severity="warning">Sorry, this meal is fully booked.</Alert>

@@ -6,7 +6,7 @@ const CustomMealButton = ({ availableSpots, onReserve, onAddToWishList }) => {
       <Button
         variant="contained"
         color="primary"
-        onclick={onReserve}
+        onClick={onReserve}
         sx={{ mt: 2 }}
       >
         Reserve

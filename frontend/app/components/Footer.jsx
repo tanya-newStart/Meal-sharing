@@ -7,10 +7,9 @@ const Footer = () => {
       color="white"
       py={3}
       sx={{
-        background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+        background: "linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)",
         textAlign: "center",
         width: "100%",
-       
       }}
     >
       <Container>
@@ -20,6 +19,8 @@ const Footer = () => {
           alignItems="center"
           justifyContent="center"
           gap={2}
+          color="#333333"
+          fontWeight="bold"
         >
           <Typography variant="body2">
             &copy; {new Date().getFullYear()} MealHub

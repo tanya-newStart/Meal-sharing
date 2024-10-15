@@ -44,7 +44,7 @@ export default function Navbar() {
     <AppBar
       position="static"
       sx={{
-        background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+        background: "linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)",
         boxShadow: "none",
         padding: "0.5rem 0",
       }}
@@ -58,6 +58,7 @@ export default function Navbar() {
             letterSpacing: 1.5,
             fontFamily: "Pacifico,cursive",
             fontSize: "2rem",
+            color: "#333333",
           }}
         >
           MealHub
@@ -88,7 +89,11 @@ export default function Navbar() {
                           primary={
                             <Box sx={{ display: "flex", alignItems: "center" }}>
                               {item.icon}
-                              <span style={{ marginLeft: 8 }}>{item.text}</span>
+                              <span
+                                style={{ marginLeft: 8, fontWeight: "bold" }}
+                              >
+                                {item.text}
+                              </span>
                             </Box>
                           }
                         />
@@ -102,15 +107,16 @@ export default function Navbar() {
         ) : (
           <Box sx={{ display: "flex" }}>
             {navItems.map((item) => (
-              <Button key={item.text} sx={{ color: "#fff" }}>
+              <Button key={item.text} sx={{ color: "#333333" }}>
                 <Link
                   href={item.link}
                   passHref
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    textDecoaration: "none",
-                    color: "#fff",
+                    textDecoration: "none",
+                    color: "#333333",
+                    fontWeight: "bold",
                   }}
                 >
                   {item.icon}
