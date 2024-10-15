@@ -8,8 +8,11 @@ import {
   Stack,
   Button,
   Collapse,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
+import AddIcon from "@mui/icons-material/Add";
 import Meal from "@/app/components/Meal";
 import ReserveMeal from "../../components/ReserveMeal";
 import SubmitReview from "../../components/SubmitReview";
@@ -25,6 +28,7 @@ const SingleMeal = ({ params }) => {
   const [reviews, setReviews] = useState([]);
   const [showReviews, setShowReviews] = useState(false);
   const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchedMeal = async () => {
@@ -85,10 +89,17 @@ const SingleMeal = ({ params }) => {
   }, [id]);
 
   const handleReviewSubmit = (newReview) => {
-    console.log("New review:", newReview);
     setReviews((prevReviews) => [newReview, ...prevReviews]);
+    setIsReviewModalOpen(false);
   };
 
+  const handleOpenReviewModal = () => {
+    setIsReviewModalOpen(true);
+  };
+
+  const handleCloseReviewModal = () => {
+    setIsReviewModalOpen(false);
+  };
   const handleReserve = () => {
     setIsReserveModalOpen(true);
   };
@@ -125,13 +136,15 @@ const SingleMeal = ({ params }) => {
   }
   return (
     <Box sx={{ my: 4, px: 2 }}>
-      <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={2}
-        justifyContent="center"
-        alignItems="flex-start"
-      >
-        <Box sx={{ flex: 2 }}>
+      <Stack direction="column" spacing={4} alignItems="center">
+        <Box
+          sx={{
+            flex: 2,
+            position: "relative",
+            maxWidth: "600px",
+            margin: "0 auto",
+          }}
+        >
           <Meal
             {...meal}
             customButton={
@@ -143,6 +156,34 @@ const SingleMeal = ({ params }) => {
             }
             showSavorDetailsLink={false}
           />
+          <Tooltip
+            title="Submit Review"
+            placement="right"
+            arrow
+            slotProps={{
+              tooltip: {
+                sx: {
+                  fontsize: "1.2rem",
+                  padding: "8px",
+                },
+              },
+            }}
+          >
+            <IconButton
+              aria-label="Add Review"
+              onClick={handleOpenReviewModal}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: -32,
+                transform: "translateY(-50%)",
+                bgcolor: "background.paper",
+                zIndex: 1,
+              }}
+            >
+              <AddIcon fontSize="medium" />
+            </IconButton>
+          </Tooltip>
           <Box sx={{ mt: 2 }}>
             {reviews.length > 0 ? (
               <Box sx={{ borderBottom: "1px solid #ccc", padding: "8px 0" }}>
@@ -213,12 +254,14 @@ const SingleMeal = ({ params }) => {
             <Alert severity="warning">Sorry, this meal is fully booked.</Alert>
           )}
         </Box>
-        <Box sx={{ mt: { xs: 4, md: 0 }, maxWidth: "400px" }}>
+        {isReviewModalOpen && (
           <SubmitReview
             mealId={id}
             onSubmit={handleReviewSubmit}
+            isModalOpen={isReviewModalOpen}
+            onClose={handleCloseReviewModal}
           ></SubmitReview>
-        </Box>
+        )}
       </Stack>
     </Box>
   );

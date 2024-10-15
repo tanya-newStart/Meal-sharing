@@ -19,6 +19,8 @@ const Meal = ({
           maxWidth: 320,
           borderRadius: "12px",
           boxShadow: 2,
+          position: "relative",
+          margin: "0 auto",
         }}
       >
         <Box sx={{ position: "relative", height: "200px" }}>
