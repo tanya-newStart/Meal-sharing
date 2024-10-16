@@ -9,7 +9,6 @@ import {
   Drawer,
   List,
   ListItem,
-  ListItemText,
   Box,
   useMediaQuery,
   useTheme,

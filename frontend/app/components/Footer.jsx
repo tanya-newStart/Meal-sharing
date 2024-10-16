@@ -27,17 +27,6 @@ const Footer = () => {
           >
             &copy; {new Date().getFullYear()} MealHub
           </Typography>
-
-          <Link href="#" color="inherit" sx={{ mx: 2, textDecoration: "none" }}>
-            Join the Table
-          </Link>
-
-          <Link href="#" color="inherit" sx={{ mx: 2, textDecoration: "none" }}>
-            House Rules
-          </Link>
-          <Link href="#" color="inherit" sx={{ mx: 2, textDecoration: "none" }}>
-            Utensils & Tools
-          </Link>
         </Box>
       </Container>
     </Box>
