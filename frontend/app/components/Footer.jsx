@@ -4,10 +4,9 @@ const Footer = () => {
   return (
     <Box
       bgcolor="primary.main"
-      color="white"
       py={3}
       sx={{
-        background: "linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)",
+        background: "#7bbf6a",
         textAlign: "center",
         width: "100%",
       }}
@@ -19,10 +18,13 @@ const Footer = () => {
           alignItems="center"
           justifyContent="center"
           gap={2}
-          color="#333333"
           fontWeight="bold"
+          sx={{ letterSpacing: 1, lineHeight: 1.5 }}
         >
-          <Typography variant="body2">
+          <Typography
+            variant="body2"
+            sx={{ letterSpacing: 1, lineHeight: 1.5 }}
+          >
             &copy; {new Date().getFullYear()} MealHub
           </Typography>
 

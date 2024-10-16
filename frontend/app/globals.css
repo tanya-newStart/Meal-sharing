@@ -24,10 +24,10 @@ main {
 }
 
 body {
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #d4fc79, #fff6e5);
+  background-attachment: fixed;
+  background-size: cover;
+  color: #333;
 }
 
 * {

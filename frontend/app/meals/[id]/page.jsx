@@ -174,7 +174,7 @@ const SingleMeal = ({ params }) => {
               onClick={handleOpenReviewModal}
               sx={{
                 position: "absolute",
-                top: "50%",
+                top: 200,
                 right: -32,
                 transform: "translateY(-50%)",
                 bgcolor: "background.paper",

@@ -47,22 +47,13 @@ function MealsList({ limit, layout, sortKey, sortDir }) {
 
   const displayedMeals = limit ? filteredMeals.slice(0, limit) : filteredMeals;
 
-  function PreviousNextMethods() {
-    const next = () => {
-      sliderRef.slickNext();
-    };
-    const previous = () => {
-      sliderRef.slickPrev();
-    };
-    return { next, previous };
-  }
-
   const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    arrows: false,
     responsive: [
       {
         breakpoint: 1024,
@@ -99,38 +90,6 @@ function MealsList({ limit, layout, sortKey, sortDir }) {
               </Box>
             ))}
           </Slider>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "-10px",
-              transform: "translateY(-50%)",
-              zIndex: 2,
-            }}
-          >
-            <Button
-              sx={{ minWidth: "100px", padding: "8px 16px" }}
-              onClick={PreviousNextMethods().previous}
-            >
-              Previous
-            </Button>
-          </Box>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              right: "-10px",
-              transform: "translateY(-50%)",
-              zIndex: 2,
-            }}
-          >
-            <Button
-              sx={{ minWidth: "100px", padding: "8px 16px" }}
-              onClick={PreviousNextMethods().next}
-            >
-              Next
-            </Button>
-          </Box>
         </Box>
       ) : (
         <Typography variant="body1">No meals available</Typography>
