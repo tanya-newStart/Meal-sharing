@@ -2,77 +2,88 @@ import { Card, CardContent, Typography, Box, Button } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
-const Meal = ({ id, title, description, price, image_url }) => {
+const Meal = ({
+  id,
+  title,
+  description,
+  price,
+  image_url,
+  customButton,
+  showSavorDetailsLink = true,
+}) => {
   const imageUrl = image_url || "default.jpg";
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-    >
+    <Box display="flex" justifyContent="center" alignItems="center">
       <Card
         sx={{
-          maxWidth: 450,
-          borderRadius: "16px",
-          boxShadow: 3,
+          maxWidth: 320,
+          borderRadius: "12px",
+          boxShadow: 2,
+          position: "relative",
+          margin: "0 auto",
         }}
       >
-        <Box sx={{ position: "relative", height: "340px" }}>
+        <Box sx={{ position: "relative", height: "200px" }}>
           <Image
             src={`/images/${imageUrl}`}
             alt={title}
-            width={400}
-            height={300}
+            width={320}
+            height={200}
             priority
-            // fill
-            style={{ borderRadius: "16px 16px 0 0", objectFit: "cover" }}
+            style={{ borderRadius: "12px 12px 0 0", objectFit: "cover" }}
           />
         </Box>
-        <CardContent>
-          <Box display="flex" justifyContent="space-between" mb={2}>
-            <Typography variant="h5" component="div" fontWeight="500">
+        <CardContent sx={{ padding: "16px 16px 8px" }}>
+          <Box display="flex" justifyContent="space-between" mb={1}>
+            <Typography variant="h6" component="div" fontWeight="500">
               {title}
             </Typography>
             <Typography
-              variant="body1"
+              variant="body2"
               sx={{
                 backgroundColor: "green",
                 color: "white",
-                padding: "0.25rem 0.5rem",
-                borderRadius: "8px",
+                padding: "0.2rem 0.4rem",
+                borderRadius: "6px",
               }}
             >
               ${price}
             </Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ height: 40, overflow: "hidden", textOverflow: "ellipsis" }}
+          >
             {description}
           </Typography>
           <Box
             display="flex"
             justifyContent="center"
             alignItems="center"
-            marginTop="16px"
+            mt={2}
+            gap={1}
           >
-            <Link href={`/meals/${id}`} passHref>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  borderRadius: "8px",
-                  padding: "8px 16px",
-                  fontSize: "0.9rem",
-                  marginTop: "16px",
-                  "&:hover": {
-                    backgroundColor: "#fafad2",
-                    color: "black",
-                  },
-                }}
-              >
-                Savor the Details!
-              </Button>
-            </Link>
+            {customButton}
+            {showSavorDetailsLink && (
+              <Link href={`/meals/${id}`} passHref>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    borderRadius: "6px",
+                    padding: "6px 12px",
+                    fontSize: "0.85rem",
+                    "&:hover": {
+                      backgroundColor: "#fafad2",
+                      color: "black",
+                    },
+                  }}
+                >
+                  Savor the Details!
+                </Button>
+              </Link>
+            )}
           </Box>
         </CardContent>
       </Card>

@@ -3,37 +3,16 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import knex from "./database_client.js";
-import { Server } from "socket.io";
-import http from "http";
 import mealsRouter from "./routers/meals.js";
 import reservationsRouter from "./routers/reservations.js";
 import reviewsRouter from "./routers/reviews.js";
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
 
 app.use(cors());
 app.use(bodyParser.json());
 
 const apiRouter = express.Router();
-
-io.on("connection", (socket) => {
-  console.log("a user connected", socket.id);
-
-  socket.on("message", (msg) => {
-    console.log("message: " + msg);
-    io.emit("message", msg);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
-
-  socket.on("reserve", (data) => {
-    io.emit("updateAvailableSpots", data.avaliableSpots);
-  });
-});
 
 apiRouter.get("/past-meals", async (req, res) => {
   const result = await knex.raw("Select * from Meal where meal_when < Now()");

@@ -9,14 +9,12 @@ import {
   Drawer,
   List,
   ListItem,
-  ListItemText,
   Box,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchBar from "./SearchBar";
+import { Menu as MenuIcon } from "lucide-react";
+import { Home, Info, Mail } from "lucide-react";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -28,27 +26,22 @@ export default function Navbar() {
     setDrawerOpen(!drawerOpen);
   };
   const navItems = [
+    { id: 1, link: "/", icon: <Home size={24} /> },
+    { id: 2, link: "/about", icon: <Info size={24} /> },
     {
-      text: "Home",
-      link: "/nav_bar",
-    },
-    {
-      text: "About",
-      link: "/nav_bar/about",
-    },
-    {
-      text: "Contact",
-      link: "/nav_bar/contact",
+      id: 3,
+      link: "https://mail.google.com/mail/?view=cm&fs=1&to=mealhub@example.com&su=Curious About MealHub!&body=Hello",
+      icon: <Mail size={24} />,
     },
   ];
   return (
     <AppBar
       position="static"
       sx={{
-        background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+        background: "rgba(255, 255, 255, 0.8)",
         boxShadow: "none",
+        backdropFilter: "blur(10px)",
         padding: "0.5rem 0",
-        mb: 4,
       }}
     >
       <Toolbar>
@@ -60,11 +53,13 @@ export default function Navbar() {
             letterSpacing: 1.5,
             fontFamily: "Pacifico,cursive",
             fontSize: "2rem",
+            color: "#333333",
           }}
         >
-          MealHub
+          <Link href="/" passHref style={{ textDecoration: "none" }}>
+            MealHub
+          </Link>
         </Typography>
-        <SearchBar sx={{ mr: 2 }} />
         {isMobile ? (
           <>
             <IconButton
@@ -74,28 +69,24 @@ export default function Navbar() {
               sx={{ mr: 2 }}
               onClick={toggleDrawer}
             >
-              <MenuIcon sx={{ fontSize: 30, color: "#fff" }} />
+              <MenuIcon size={30} color="black" />
             </IconButton>
             <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
               <Box
-                sx={{ width: 250, padding: "1rem" }}
+                sx={{ width: 150, padding: "1rem" }}
                 role="presentation"
                 onClick={toggleDrawer}
                 onKeyDown={toggleDrawer}
               >
                 <List>
                   {navItems.map((item) => (
-                    <ListItem button key={item.text}>
-                      <Link href={item.link} passHref>
-                        <ListItemText
-                          primary={
-                            <Box sx={{ display: "flex", alignItems: "center" }}>
-                              {item.icon}
-                              <span style={{ marginLeft: 8 }}>{item.text}</span>
-                            </Box>
-                          }
-                        />
-                      </Link>
+                    <ListItem button key={item.id}>
+                      <a
+                        href={item.link}
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        {item.icon}
+                      </a>
                     </ListItem>
                   ))}
                 </List>
@@ -105,19 +96,20 @@ export default function Navbar() {
         ) : (
           <Box sx={{ display: "flex" }}>
             {navItems.map((item) => (
-              <Button key={item.text} sx={{ color: "#fff" }}>
+              <Button key={item.id} sx={{ color: "#333333" }}>
                 <Link
                   href={item.link}
                   passHref
+                  rel="noopener noreferrer"
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    textDecoaration: "none",
-                    color: "#fff",
+                    textDecoration: "none",
+                    color: "#333333",
+                    fontWeight: "bold",
                   }}
                 >
                   {item.icon}
-                  <span style={{ marginLeft: 8 }}>{item.text}</span>
                 </Link>
               </Button>
             ))}

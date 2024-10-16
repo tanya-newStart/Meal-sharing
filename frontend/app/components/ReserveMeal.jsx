@@ -1,12 +1,24 @@
 "use client";
-import { useState, useRef,useEffect } from "react";
-import { Box, Typography, Button, Container, TextField } from "@mui/material";
+import { useState, useRef } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Modal,
+  IconButton,
+} from "@mui/material";
 import Link from "next/link";
-import {io} from "socket.io-client";
+import CloseIcon from "@mui/icons-material/Close";
 
-const socket = io(process.env.NEXT_PUBLIC_API_URL);
-
-export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,setSubmitted }) {
+export default function ReserveMeal({
+  mealId,
+  availableSpots,
+  setAvailableSpots,
+  setSubmitted,
+  open,
+  onClose,
+}) {
   const [formData, setFormData] = useState({
     customerName: "",
     email: "",
@@ -14,21 +26,7 @@ export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,se
     numberOfGuests: 1,
   });
 
-  const customerNameRef = useRef(null);
-  const emailRef = useRef(null);
-  const phonenumberRef = useRef(null);
-
-  const[submittedSuccessfully,setSubmittedSuccessfully]=useState(false)
-
-  useEffect(() => {
-   socket.on("reservationCreated", (data) => {
-      setAvailableSpots(data.max_reservations - data.total_reserved);
-    });
-
-    return () => {
-      socket.close();
-    };
-  },[setAvailableSpots]);
+  const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,7 +62,7 @@ export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,se
     }
     if (formData.numberOfGuests > availableSpots) {
       errorMessages.push("Not enough spots available.");
-  }
+    }
     if (errorMessages.length > 0) {
       alert(errorMessages.join("\n"));
       return;
@@ -94,112 +92,133 @@ export default function ReserveMeal({ mealId,availableSpots,setAvailableSpots,se
       }
 
       const data = await response.json();
-      const totalReserved =Number(data.total_reserved);
+      const totalReserved = Number(data.total_reserved);
       const maxReservations = Number(data.max_reservations);
-      const newAvailableSpots = maxReservations-totalReserved;
-
-      socket.emit("reserve", { availableSpots: newAvailableSpots });
+      const newAvailableSpots = maxReservations - totalReserved;
 
       setAvailableSpots(newAvailableSpots);
       setSubmittedSuccessfully(true);
       setSubmitted(true);
-    
+
       setFormData({
         customerName: "",
         email: "",
         phonenumber: "",
         numberOfGuests: 1,
       });
-     
     } catch (error) {
       alert(error.message);
     }
   };
   return (
-    <Container component="main" maxWidth="xs">
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="reservation-modal-title"
+    >
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 8,
-          p: 3,
-          borderRadius: 1,
-          boxShadow: 1,
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 2,
         }}
       >
-        <Typography variant="h5" gutterBottom>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{ position: "absolute", right: 8, top: 8 }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography
+          id="reservation-modal-title"
+          variant="h6"
+          component="h2"
+          gutterBottom
+        >
           Reservation Form
         </Typography>
-      
-      </Box>
-      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-        <TextField
-          label="Name"
-          variant="outlined"
-          name="customerName"
-          value={formData.customerName}
-          onChange={handleChange}
-          required
-          fullWidth
-          inputRef={customerNameRef}
-          sx={{ mb: 2 }}
-        />
-        <TextField
-          label="Number of Guests"
-          name="numberOfGuests"
-          type="number"
-          value={formData.numberOfGuests}
-          onChange={handleChange}
-          required
-          fullWidth
-        ></TextField>
-        <TextField
-          label="Email"
-          type="email"
-          name="email"
-          variant="outlined"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          fullWidth
-          inputRef={emailRef}
-          sx={{ mb: 2 }}
-        />
 
-        <TextField
-          label="Phone number"
-          type="tel"
-          id="phonenumber"
-          name="phonenumber"
-          variant="outlined"
-          value={formData.phonenumber}
-          onChange={handleChange}
-          required
-          fullWidth
-          inputRef={phonenumberRef}
-          sx={{ mb: 2 }}
-        />
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          <TextField
+            label="Name"
+            variant="outlined"
+            name="customerName"
+            value={formData.customerName}
+            onChange={handleChange}
+            required
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Number of Guests"
+            name="numberOfGuests"
+            type="number"
+            value={formData.numberOfGuests}
+            onChange={handleChange}
+            required
+            fullWidth
+            sx={{ mb: 2 }}
+          ></TextField>
+          <TextField
+            label="Email"
+            type="email"
+            name="email"
+            variant="outlined"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            fullWidth
+            sx={{ mb: 2 }}
+          />
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2 }}
-        >
-          Book Seat
-        </Button>
-        {submittedSuccessfully && (
-          <Typography variant="body1" color="success.main">
-            Thank you for your booking!
-          </Typography>
-        )}
+          <TextField
+            label="Phone number"
+            type="tel"
+            id="phonenumber"
+            name="phonenumber"
+            variant="outlined"
+            value={formData.phonenumber}
+            onChange={handleChange}
+            required
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 2,
+              mt: 2,
+            }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+            >
+              Book Seat
+            </Button>
             <Link href="/" passHref>
-              <Button variant="outlined" color="primary">
+              <Button variant="outlined" color="primary" sx={{ mt: 2 }}>
                 Back to Home
               </Button>
             </Link>
+          </Box>
+          {submittedSuccessfully && (
+            <Typography variant="body1" color="success.main">
+              Thank you for your booking!
+            </Typography>
+          )}
+        </Box>
       </Box>
-    </Container>
+    </Modal>
   );
 }

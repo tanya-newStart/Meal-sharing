@@ -8,22 +8,27 @@ import {
   Stack,
   Button,
   Collapse,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
+import AddIcon from "@mui/icons-material/Add";
+import Meal from "@/app/components/Meal";
 import ReserveMeal from "../../components/ReserveMeal";
 import SubmitReview from "../../components/SubmitReview";
+import CustomMealButton from "@/app/components/CustomMealButton";
 
 const SingleMeal = ({ params }) => {
   const { id } = params;
-
   const [meal, setMeal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [availableSpots, setAvailableSpots] = useState(0);
+  const [availableSpots, setAvailableSpots] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [showReviews, setShowReviews] = useState(false);
-  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchedMeal = async () => {
@@ -32,7 +37,6 @@ const SingleMeal = ({ params }) => {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/meals/${id}`
         );
-        console.log(response.status);
 
         if (response.ok) {
           const data = await response.json();
@@ -84,6 +88,26 @@ const SingleMeal = ({ params }) => {
     fetchReviews();
   }, [id]);
 
+  const handleReviewSubmit = (newReview) => {
+    setReviews((prevReviews) => [newReview, ...prevReviews]);
+    setIsReviewModalOpen(false);
+  };
+
+  const handleOpenReviewModal = () => {
+    setIsReviewModalOpen(true);
+  };
+
+  const handleCloseReviewModal = () => {
+    setIsReviewModalOpen(false);
+  };
+  const handleReserve = () => {
+    setIsReserveModalOpen(true);
+  };
+
+  const handleCloseReserveModal = () => {
+    setIsReserveModalOpen(false);
+  };
+
   if (loading) {
     return (
       <Box
@@ -112,34 +136,54 @@ const SingleMeal = ({ params }) => {
   }
   return (
     <Box sx={{ my: 4, px: 2 }}>
-      <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={2}
-        justifyContent="center"
-        alignItems="flex-start"
-      >
-        <Box sx={{ flex: 2 }}>
-          <Typography variant="h4" gutterBottom>
-            {meal.title}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            {meal.description}
-          </Typography>
-          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-            Price: ${meal.price}
-          </Typography>
-
-          <Box
-            component="img"
-            src={`/images/${meal.image_url}`}
-            alt=""
-            sx={{
-              width: { xs: "100%", md: "50%" },
-              height: "auto",
-              borderRadius: 2,
-              boxShadow: 2,
-            }}
+      <Stack direction="column" spacing={4} alignItems="center">
+        <Box
+          sx={{
+            flex: 2,
+            position: "relative",
+            maxWidth: "600px",
+            margin: "0 auto",
+          }}
+        >
+          <Meal
+            {...meal}
+            customButton={
+              <CustomMealButton
+                mealId={id}
+                availableSpots={availableSpots}
+                onReserve={handleReserve}
+              />
+            }
+            showSavorDetailsLink={false}
           />
+          <Tooltip
+            title="Submit Review"
+            placement="right"
+            arrow
+            slotProps={{
+              tooltip: {
+                sx: {
+                  fontsize: "1.2rem",
+                  padding: "8px",
+                },
+              },
+            }}
+          >
+            <IconButton
+              aria-label="Add Review"
+              onClick={handleOpenReviewModal}
+              sx={{
+                position: "absolute",
+                top: 200,
+                right: -32,
+                transform: "translateY(-50%)",
+                bgcolor: "background.paper",
+                zIndex: 1,
+              }}
+            >
+              <AddIcon fontSize="medium" />
+            </IconButton>
+          </Tooltip>
           <Box sx={{ mt: 2 }}>
             {reviews.length > 0 ? (
               <Box sx={{ borderBottom: "1px solid #ccc", padding: "8px 0" }}>
@@ -186,7 +230,7 @@ const SingleMeal = ({ params }) => {
                       </Typography>
                       <Rating
                         name="read-only"
-                        value={reviews[0].stars}
+                        value={review.stars}
                         readOnly
                       ></Rating>
                     </Box>
@@ -203,14 +247,21 @@ const SingleMeal = ({ params }) => {
               availableSpots={availableSpots}
               setAvailableSpots={setAvailableSpots}
               setSubmitted={setSubmitted}
+              open={isReserveModalOpen}
+              onClose={handleCloseReserveModal}
             ></ReserveMeal>
           ) : (
             <Alert severity="warning">Sorry, this meal is fully booked.</Alert>
           )}
         </Box>
-        <Box sx={{ mt: { xs: 4, md: 0 }, maxWidth: "400px" }}>
-          <SubmitReview mealId={id}></SubmitReview>
-        </Box>
+        {isReviewModalOpen && (
+          <SubmitReview
+            mealId={id}
+            onSubmit={handleReviewSubmit}
+            isModalOpen={isReviewModalOpen}
+            onClose={handleCloseReviewModal}
+          ></SubmitReview>
+        )}
       </Stack>
     </Box>
   );

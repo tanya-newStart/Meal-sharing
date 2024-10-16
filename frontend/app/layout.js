@@ -30,9 +30,9 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body >
+      <body>
         <Navbar />
-        <main>  {children}</main>
+        <main> {children}</main>
         <Footer />
       </body>
     </html>
